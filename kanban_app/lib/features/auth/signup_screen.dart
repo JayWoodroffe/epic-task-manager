@@ -1,34 +1,32 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/signup_screen.dart';
 import 'package:kanban_app/styles/colors.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatelessWidget {
+  SignupScreen({super.key});
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _fullNameController = TextEditingController();
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  void dispose() {
+    // Dispose controllers when the widget is removed
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       backgroundColor: MyColors.mintCream,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 150),
-                Text('kanban',
+                SizedBox(height: 100),
+                Text('join the family',
                     style: TextStyle(
                         fontSize: 40,
                         color: MyColors.midGreen,
@@ -94,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButton(
                       onPressed: () => {},
                       child: Text(
-                        "Login",
+                        "Join",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -107,27 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         backgroundColor: MyColors.midGreen,
                       )),
                 ),
-
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Don't have an account? ",
-                        style: TextStyle(color: MyColors.deepGreen)),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return SignupScreen();
-                        }));
-                      },
-                      child: Text(
-                        "Sign Up.",
-                        style: TextStyle(color: MyColors.midGreen),
-                      ),
-                    )
-                  ],
-                )
               ],
             ),
           ),
