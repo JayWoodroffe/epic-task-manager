@@ -25,61 +25,87 @@ class SignupScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 100),
-                Text('join the family',
+                Text('JOIN US',
                     style: TextStyle(
                         fontSize: 40,
-                        color: MyColors.midGreen,
-                        fontWeight: FontWeight.bold)),
+                        color: MyColors.deepGreen,
+                        fontWeight: FontWeight.w900)),
 
                 SizedBox(height: 40),
 
                 //email input
-                TextField(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  cursorColor: MyColors.deepGreen,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: MyColors.deepGreen),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: MyColors.deepGreen, width: 2),
+                Container(
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: MyColors.deepGreen,
+                          blurRadius: 0,
+                          offset: Offset(5, 7),
+                        )
+                      ]),
+                  child: TextField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: MyColors.deepGreen,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: MyColors.mintCream,
+                      labelText: 'Email',
+                      labelStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: MyColors.deepGreen),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ),
 
                 SizedBox(height: 10),
 
-                //password input
-                TextField(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  controller: _passwordController,
-                  obscureText: true,
-                  cursorColor: MyColors.deepGreen,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: MyColors.deepGreen),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: MyColors.deepGreen, width: 2),
+                Container(
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 0,
+                          offset: Offset(5, 7),
+                          color: MyColors.deepGreen,
+                        )
+                      ]),
+                  child: TextField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    controller: _passwordController,
+                    obscureText: true,
+                    cursorColor: MyColors.deepGreen,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: MyColors.mintCream,
+                      labelText: 'Password',
+                      labelStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: MyColors.deepGreen),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ),
@@ -102,7 +128,7 @@ class SignupScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        backgroundColor: MyColors.midGreen,
+                        backgroundColor: MyColors.deepGreen,
                       )),
                 ),
               ],

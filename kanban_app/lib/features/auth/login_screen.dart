@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/signup_screen.dart';
+import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,71 +29,106 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 150),
-                Text('kanban',
+                Text('KANBAN',
                     style: TextStyle(
                         fontSize: 40,
                         color: MyColors.midGreen,
-                        fontWeight: FontWeight.bold)),
+                        fontWeight: FontWeight.w900)),
 
                 SizedBox(height: 40),
 
                 //email input
-                TextField(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  cursorColor: MyColors.deepGreen,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: MyColors.deepGreen),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: MyColors.deepGreen, width: 2),
+                Container(
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 10),
-
-                //password input
-                TextField(
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  controller: _passwordController,
-                  obscureText: true,
-                  cursorColor: MyColors.deepGreen,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: MyColors.deepGreen),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: MyColors.deepGreen, width: 2),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: MyColors.deepGreen,
+                          blurRadius: 0,
+                          offset: Offset(5, 7),
+                        )
+                      ]),
+                  child: TextField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: MyColors.deepGreen,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: MyColors.mintCream,
+                      labelText: 'Email',
+                      labelStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: MyColors.deepGreen),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ),
 
                 SizedBox(height: 20),
+
+                //password input
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 0,
+                          offset: Offset(5, 7),
+                          color: MyColors.deepGreen,
+                        )
+                      ]),
+                  child: TextField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    controller: _passwordController,
+                    obscureText: true,
+                    cursorColor: MyColors.deepGreen,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: MyColors.mintCream,
+                      labelText: 'Password',
+                      labelStyle: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: MyColors.deepGreen),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: MyColors.deepGreen, width: 3),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 25),
+
                 //login button
                 SizedBox(
                   height: 50,
                   width: double.infinity,
                   child: TextButton(
-                      onPressed: () => {},
+                      onPressed: () => {
+                            //TODO: auth logic
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return Dashboard();
+                            }))
+                          },
                       child: Text(
                         "Login",
                         style: Theme.of(context)
@@ -104,11 +140,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        backgroundColor: MyColors.midGreen,
+                        backgroundColor: MyColors.deepGreen,
                       )),
                 ),
 
                 SizedBox(height: 40),
+                //sign up text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
