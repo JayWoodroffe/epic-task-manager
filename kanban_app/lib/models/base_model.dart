@@ -9,8 +9,8 @@ abstract class BaseModel {
   BaseModel({
     required this.id,
     required this.createdOn,
-    this.updatedOn,
     required this.createdBy,
+    this.updatedOn,
     this.updatedBy,
     this.isActive = true,
   });
