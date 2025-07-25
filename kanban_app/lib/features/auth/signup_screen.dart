@@ -17,21 +17,20 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.mintCream,
+      backgroundColor: MyColors.cream,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('JOIN US',
                     style: TextStyle(
                         fontSize: 40,
-                        color: MyColors.deepGreen,
+                        color: MyColors.tertiary,
                         fontWeight: FontWeight.w900)),
 
-                SizedBox(height: 40),
+                SizedBox(height: 20),
 
                 //email input
                 Container(
@@ -39,7 +38,7 @@ class SignupScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: MyColors.deepGreen,
+                          color: MyColors.tertiary,
                           blurRadius: 0,
                           offset: Offset(5, 7),
                         )
@@ -48,23 +47,23 @@ class SignupScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    cursorColor: MyColors.deepGreen,
+                    cursorColor: MyColors.tertiary,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: MyColors.mintCream,
+                      fillColor: MyColors.cream,
                       labelText: 'Email',
                       labelStyle: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(color: MyColors.deepGreen),
+                          ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.deepGreen, width: 3),
+                            BorderSide(color: MyColors.tertiary, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.deepGreen, width: 3),
+                            BorderSide(color: MyColors.tertiary, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -80,30 +79,30 @@ class SignupScreen extends StatelessWidget {
                         BoxShadow(
                           blurRadius: 0,
                           offset: Offset(5, 7),
-                          color: MyColors.deepGreen,
+                          color: MyColors.tertiary,
                         )
                       ]),
                   child: TextField(
                     style: Theme.of(context).textTheme.bodyMedium,
                     controller: _passwordController,
                     obscureText: true,
-                    cursorColor: MyColors.deepGreen,
+                    cursorColor: MyColors.tertiary,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: MyColors.mintCream,
+                      fillColor: MyColors.cream,
                       labelText: 'Password',
                       labelStyle: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(color: MyColors.deepGreen),
+                          ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.deepGreen, width: 3),
+                            BorderSide(color: MyColors.tertiary, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.deepGreen, width: 3),
+                            BorderSide(color: MyColors.tertiary, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -118,17 +117,17 @@ class SignupScreen extends StatelessWidget {
                   child: TextButton(
                       onPressed: () => {},
                       child: Text(
-                        "Join",
+                        "Sign Up",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
-                            ?.copyWith(color: MyColors.mintCream),
+                            ?.copyWith(color: MyColors.cream),
                       ),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        backgroundColor: MyColors.deepGreen,
+                        backgroundColor: MyColors.tertiary,
                       )),
                 ),
               ],

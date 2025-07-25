@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kanban_app/features/dashboard/list_widget.dart';
 
 class BoardScreen extends StatefulWidget {
   const BoardScreen({super.key});
@@ -10,6 +11,18 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   @override
   Widget build(BuildContext context) {
-    return PageView();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text("Board Name"),
+      ),
+      body: PageView(
+        children: [
+          ListScreen(),
+          ListScreen(),
+          ListScreen(),
+        ],
+      ),
+    );
   }
 }

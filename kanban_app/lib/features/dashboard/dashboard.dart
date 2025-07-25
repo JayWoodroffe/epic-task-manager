@@ -25,19 +25,19 @@ class _DashboardState extends State<Dashboard> {
             padding: EdgeInsets.only(left: 20),
             child: Icon(
               Icons.bolt,
-              size: 30,
-              color: MyColors.midGreen,
+              size: 50,
+              color: MyColors.tertiary,
             )),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           "Projects",
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: MyColors.midGreen,
+                color: MyColors.tertiary,
               ),
         ),
       ),
-      backgroundColor: MyColors.mintCream,
+      backgroundColor: MyColors.cream,
       body: ListView.builder(
         itemCount: projects.length,
         itemBuilder: (context, index) {
