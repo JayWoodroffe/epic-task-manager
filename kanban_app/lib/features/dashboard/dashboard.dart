@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/project_card.dart';
 
+//dashboard displays all of the projects that auser has acess to
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
@@ -22,7 +23,7 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: Padding(
-            padding: EdgeInsets.only(left: 20),
+            padding: EdgeInsets.only(left: 10),
             child: Icon(
               Icons.bolt,
               size: 50,
@@ -43,6 +44,48 @@ class _DashboardState extends State<Dashboard> {
         itemBuilder: (context, index) {
           return ProjectCard(title: projects[index]);
         },
+      ),
+
+      //TODO: make conditional based on user type
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      floatingActionButton: GestureDetector(
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Container(
+            width: 150,
+            height: 40,
+            decoration: BoxDecoration(
+                color: MyColors.secondary,
+                border: Border.all(color: MyColors.charcoal, width: 3),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                      offset: Offset(5, 7),
+                      blurRadius: 0,
+                      color: MyColors.charcoal)
+                ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add,
+                  size: 30,
+                  color: MyColors.cream,
+                  weight: 50,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "PROJECT",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: MyColors.cream),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/styles/colors.dart';
 
+//Custom dialog widget for creating a new task
 class CreateTask extends StatefulWidget {
   final Function(String taskName) onConfirm;
   final VoidCallback onCancel;
+  final String object; //'task', 'list' (board/project - potentially )
+  final int inputLength;
 
   const CreateTask(
-      {required this.onConfirm, required this.onCancel, super.key});
+      {required this.object,
+      required this.inputLength,
+      required this.onConfirm,
+      required this.onCancel,
+      super.key});
 
   @override
   State<CreateTask> createState() => _CreateTaskState();
@@ -21,6 +28,7 @@ class _CreateTaskState extends State<CreateTask> {
     super.dispose();
   }
 
+//chose a Dialog over an AlertDialog to allow for customising the dialog box
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -28,6 +36,7 @@ class _CreateTaskState extends State<CreateTask> {
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
+          //container at the top of the hierarchy allows for drop shadow on the dialog box
           width: MediaQuery.of(context).size.width - 20,
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -41,20 +50,25 @@ class _CreateTaskState extends State<CreateTask> {
               ],
               borderRadius: BorderRadius.circular(16)),
           child: Column(
+            //column for laying out all the dialog components
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("NEW TASK", style: TextStyle(fontSize: 25)),
+              Text("NEW ${widget.object.toUpperCase()}",
+                  style: TextStyle(fontSize: 25)),
               SizedBox(
                 height: 15,
               ),
+              //entering the task name
               TextField(
+                maxLines: widget.inputLength,
                 controller: _taskNameController,
                 cursorColor: MyColors.charcoal,
                 style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: MyColors.cream,
-                  labelText: 'Task Name',
+                  labelText: '${widget.object} Name',
+                  floatingLabelAlignment: FloatingLabelAlignment.start,
                   labelStyle: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -96,8 +110,8 @@ class _CreateTaskState extends State<CreateTask> {
                   SizedBox(width: 15),
                   Expanded(
                     child: TextButton(
-                      onPressed: () =>
-                          widget.onConfirm(_taskNameController.text),
+                      onPressed: () => widget.onConfirm(_taskNameController
+                          .text), //return the new task name to caller screen
                       style: TextButton.styleFrom(
                         backgroundColor: MyColors.tertiary,
                         foregroundColor: MyColors.cream,

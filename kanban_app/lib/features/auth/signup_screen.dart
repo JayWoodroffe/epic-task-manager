@@ -24,6 +24,7 @@ class SignupScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                //heading
                 Text('JOIN US',
                     style: TextStyle(
                         fontSize: 40,
@@ -58,12 +59,12 @@ class SignupScreen extends StatelessWidget {
                           ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -72,6 +73,7 @@ class SignupScreen extends StatelessWidget {
 
                 SizedBox(height: 10),
 
+                //password input
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
@@ -97,12 +99,12 @@ class SignupScreen extends StatelessWidget {
                           ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -114,21 +116,33 @@ class SignupScreen extends StatelessWidget {
                 SizedBox(
                   height: 50,
                   width: double.infinity,
-                  child: TextButton(
-                      onPressed: () => {},
-                      child: Text(
-                        "Sign Up",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.cream),
-                      ),
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 0,
+                            color: MyColors.charcoal,
+                            offset: Offset(5, 7))
+                      ],
+                    ),
+                    child: TextButton(
+                        onPressed: () => {},
+                        child: Text(
+                          "Sign Up",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: MyColors.cream),
                         ),
-                        backgroundColor: MyColors.tertiary,
-                      )),
+                        style: TextButton.styleFrom(
+                          side: BorderSide(color: MyColors.charcoal, width: 3),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          backgroundColor: MyColors.tertiary,
+                        )),
+                  ),
                 ),
               ],
             ),

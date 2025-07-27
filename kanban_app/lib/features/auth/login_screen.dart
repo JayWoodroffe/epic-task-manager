@@ -62,12 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -102,12 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ?.copyWith(color: MyColors.tertiary),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: MyColors.tertiary, width: 3),
+                            BorderSide(color: MyColors.charcoal, width: 3),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
@@ -120,30 +120,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 50,
                   width: double.infinity,
-                  child: TextButton(
-                      onPressed: () => {
-                            //TODO: auth logic
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return Dashboard();
-                            }))
-                          },
-                      child: Text(
-                        "Login",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.cream),
-                      ),
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 0,
+                            color: MyColors.charcoal,
+                            offset: Offset(5, 7))
+                      ],
+                    ),
+                    child: TextButton(
+                        onPressed: () => {
+                              //TODO: auth logic
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return Dashboard();
+                              }))
+                            },
+                        child: Text(
+                          "Login",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: MyColors.cream),
                         ),
-                        backgroundColor: MyColors.tertiary,
-                      )),
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            side:
+                                BorderSide(color: MyColors.charcoal, width: 3),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          backgroundColor: MyColors.tertiary,
+                        )),
+                  ),
                 ),
 
                 SizedBox(height: 40),
+
                 //sign up text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

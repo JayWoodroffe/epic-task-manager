@@ -63,20 +63,20 @@ class _ListScreenState extends State<ListScreen> {
             //create task button
             Padding(
               padding: EdgeInsets.only(top: 10, bottom: 10),
-              child: Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: MyColors.secondary,
-                      border: Border.all(color: MyColors.charcoal, width: 3),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: Offset(5, 7),
-                            blurRadius: 0,
-                            color: MyColors.charcoal)
-                      ]),
-                  child: GestureDetector(
-                    onTap: () => _showCreateTaskDialog(context),
+              child: GestureDetector(
+                  onTap: () => _showCreateTaskDialog(context),
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: MyColors.secondary,
+                        border: Border.all(color: MyColors.charcoal, width: 3),
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                              offset: Offset(5, 7),
+                              blurRadius: 0,
+                              color: MyColors.charcoal)
+                        ]),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -109,13 +109,17 @@ class _ListScreenState extends State<ListScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return CreateTask(onConfirm: (String taskName) {
-            //create task and add to db and list
-            Navigator.of(context).pop();
-            print(taskName);
-          }, onCancel: () {
-            Navigator.of(context).pop();
-          });
+          return CreateTask(
+              object: "Task",
+              inputLength: 3,
+              onConfirm: (String taskName) {
+                //create task and add to db and list
+                Navigator.of(context).pop();
+                print(taskName);
+              },
+              onCancel: () {
+                Navigator.of(context).pop();
+              });
         });
   }
 }
