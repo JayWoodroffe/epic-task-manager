@@ -31,7 +31,8 @@ class ProjectCard extends StatelessWidget {
           color: Colors.white,
         ),
         margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               title,
@@ -39,6 +40,7 @@ class ProjectCard extends StatelessWidget {
                     color: MyColors.deepGreen,
                   ),
             ),
+            Icon(Icons.menu)
           ],
         ),
       ),

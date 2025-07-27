@@ -17,6 +17,7 @@
 
 # === VS CODE SETTINGS ===
 .vscode/
+.vs/
 .history/
 *.code-workspace
 
@@ -45,6 +46,8 @@ ehthumbs.db
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
+/backend/KanbanApi/appsettings.Development.json
+/backend/KanbanApi/secrets.json
 
 # Rider
 .idea/
