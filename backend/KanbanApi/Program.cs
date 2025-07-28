@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using KanbanApi.Data;
-
+using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add user secrets 
@@ -42,6 +42,6 @@ app.MapGet("/tasks", async (MyDbContext db) =>
     return tasks;
 });
 
-app.MapGet("/users/{userId}/projects", async)
 
+app.MapControllers();
 app.Run();

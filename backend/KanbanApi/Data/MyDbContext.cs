@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
-
+using KanbanApi.Models; 
 namespace KanbanApi.Data;
+
 
 public partial class MyDbContext : DbContext
 {
@@ -26,7 +27,7 @@ public partial class MyDbContext : DbContext
 
     public virtual DbSet<Status> Statuses { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<KanbanApi.Models.Task> Tasks { get; set; }
 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -222,7 +223,7 @@ public partial class MyDbContext : DbContext
                 .HasConstraintName("status_ibfk_2");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<KanbanApi.Models.Task>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
