@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/auth/login_screen.dart';
 import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/themes.dart';
@@ -6,7 +7,10 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => ProjectProvider())],
+    providers: [
+      ChangeNotifierProvider(create: (_) => ProjectProvider()),
+      ChangeNotifierProvider(create: (_) => AuthProvider())
+    ],
     child: MyApp(),
   ));
 }

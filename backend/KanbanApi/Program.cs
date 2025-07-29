@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using KanbanApi.Data;
+using KanbanApi.Services;
+
 using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddScoped<TokenService>();
+
 
 // Add services
 builder.Services.AddControllers()
