@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace KanbanApi.Models;
 
-public partial class Siteuser
+public partial class Siteuser:BaseModel
 {
-    public int Id { get; set; }
+    //public int Id { get; set; }
 
-    public Guid Guid { get; set; }
+    //public Guid Guid { get; set; }
 
     public string Email { get; set; } = null!;
 
@@ -17,15 +17,15 @@ public partial class Siteuser
 
     public string? Role { get; set; }
 
-    public int? CreatedById { get; set; }
+    //public int? CreatedById { get; set; }
 
-    public DateTime CreatedOn { get; set; }
+    //public DateTime CreatedOn { get; set; }
 
-    public int? UpdatedById { get; set; }
+    //public int? UpdatedById { get; set; }
 
-    public DateTime? UpdatedOn { get; set; }
+    //public DateTime? UpdatedOn { get; set; }
 
-    public bool? IsActive { get; set; }
+    //public bool? IsActive { get; set; }
 
     public virtual ICollection<Board> BoardCreatedBies { get; set; } = new List<Board>();
 

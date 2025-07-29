@@ -3,22 +3,8 @@ using System.Collections.Generic;
 
 namespace KanbanApi.Models;
 
-public partial class Project
+public partial class Project: BaseModel
 {
-    public int Id { get; set; }
-
-    public Guid Guid { get; set; }
-
-    public int CreatedById { get; set; }
-
-    public DateTime CreatedOn { get; set; }
-
-    public int? UpdatedById { get; set; }
-
-    public DateTime? UpdatedOn { get; set; }
-
-    public sbyte IsActive { get; set; }
-
     public string? Name { get; set; }
 
     public string? Description { get; set; }

@@ -2,11 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:kanban_app/features/boards/board_screen.dart';
+import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/styles/colors.dart';
 
 class ProjectCard extends StatelessWidget {
-  final String title;
-  const ProjectCard({required this.title, super.key});
+  final Project project;
+  const ProjectCard({required this.project, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ProjectCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              title,
+              project.name,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: MyColors.deepGreen,
                   ),

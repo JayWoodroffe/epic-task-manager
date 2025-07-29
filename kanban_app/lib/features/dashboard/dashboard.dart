@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/project_card.dart';
+import 'package:provider/provider.dart';
 
 //dashboard displays all of the projects that auser has acess to
 class Dashboard extends StatefulWidget {
@@ -18,7 +20,18 @@ class _DashboardState extends State<Dashboard> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProjectProvider>(context, listen: false)
+          .fetchProjectsForUser();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final projectProvider = Provider.of<ProjectProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -39,12 +52,14 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       backgroundColor: MyColors.cream,
-      body: ListView.builder(
-        itemCount: projects.length,
-        itemBuilder: (context, index) {
-          return ProjectCard(title: projects[index]);
-        },
-      ),
+      body: projectProvider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: projectProvider.projects.length,
+              itemBuilder: (context, index) {
+                return ProjectCard(project: projectProvider.projects[index]);
+              },
+            ),
 
       //TODO: make conditional based on user type
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,

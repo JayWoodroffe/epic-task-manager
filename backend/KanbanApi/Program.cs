@@ -15,9 +15,28 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // Add services
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//enabling cross-origin resource sharing (CORS) to allow requests from the Flutter app
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFlutterApp", builder =>
+    {
+        builder
+            .WithOrigins("http://localhost:3000", "http://localhost:5285", "http://192.168.1.54") // your frontend URLs
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // optional if using cookies
+    });
+});
+
 
 var app = builder.Build();
 
@@ -27,6 +46,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFlutterApp"); // Use the CORS policy
+//app.Urls.Add(); //configure api to listen on the LAN
 
 app.UseHttpsRedirection();
 
@@ -44,4 +66,4 @@ app.MapGet("/tasks", async (MyDbContext db) =>
 
 
 app.MapControllers();
-app.Run();
+app.Run("http://0.0.0.0:5285");

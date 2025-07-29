@@ -38,7 +38,7 @@ class _CreateTaskState extends State<CreateTask> {
       child: Container(
           //container at the top of the hierarchy allows for drop shadow on the dialog box
           width: MediaQuery.of(context).size.width - 20,
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(width: 3, color: MyColors.charcoal),
