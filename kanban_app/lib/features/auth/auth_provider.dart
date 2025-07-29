@@ -13,6 +13,7 @@ class AuthProvider with ChangeNotifier {
   bool get isLoggedIn => _token != null;
   String? get guid => _guid;
   String? get role => _role;
+  bool get isAdmin => _role == "admin";
 
   Future<bool> login(String email, String password) async {
     final loggedIn = await _authService.login(
@@ -25,7 +26,11 @@ class AuthProvider with ChangeNotifier {
       final payload = JwtDecoder.decode(_token!);
       _email = payload['email'];
       _guid = payload['guid'];
-      _role = payload['role'];
+      _role = payload[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+
+      debugPrint('Decoded JWT payload: $payload');
+      debugPrint('Extracted role: $_role');
 
       notifyListeners();
       return true;

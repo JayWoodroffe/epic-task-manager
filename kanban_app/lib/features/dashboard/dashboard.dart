@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/project_card.dart';
@@ -13,11 +14,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  //static test data
-  final List<String> projects = List<String>.generate(
-    5,
-    (i) => 'Project ${i + 1}',
-  );
+  final List<String> projectMenu = ['Delete', 'Edit'];
 
   @override
   void initState() {
@@ -30,6 +27,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isAdmin = authProvider.isAdmin;
     final projectProvider = Provider.of<ProjectProvider>(context);
 
     return Scaffold(
@@ -53,55 +52,86 @@ class _DashboardState extends State<Dashboard> {
       ),
       backgroundColor: MyColors.cream,
       body: projectProvider.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator(
+              color: MyColors.tertiary,
+            ))
           : ListView.builder(
               itemCount: projectProvider.projects.length,
               itemBuilder: (context, index) {
-                return ProjectCard(project: projectProvider.projects[index]);
+                return ProjectCard(
+                    project: projectProvider.projects[index],
+                    onMenuPressed: _displayProjectMenu);
               },
             ),
-
-      //TODO: make conditional based on user type
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
-      floatingActionButton: GestureDetector(
-        onTap: () {},
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Container(
-            width: 150,
-            height: 40,
-            decoration: BoxDecoration(
-                color: MyColors.secondary,
-                border: Border.all(color: MyColors.charcoal, width: 3),
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(5, 7),
-                      blurRadius: 0,
-                      color: MyColors.charcoal)
-                ]),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add,
-                  size: 30,
-                  color: MyColors.cream,
-                  weight: 50,
+      floatingActionButton: (isAdmin)
+          ? GestureDetector(
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Container(
+                  width: 150,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: MyColors.secondary,
+                      border: Border.all(color: MyColors.charcoal, width: 3),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                            offset: Offset(5, 7),
+                            blurRadius: 0,
+                            color: MyColors.charcoal)
+                      ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        size: 30,
+                        color: MyColors.cream,
+                        weight: 50,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "PROJECT",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: MyColors.cream),
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(width: 10),
-                Text(
-                  "PROJECT",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: MyColors.cream),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            )
+          : null,
     );
+  }
+
+  void _displayProjectMenu(BuildContext context, Offset position) {
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        position.dx + 1.0,
+        position.dy + 1.0,
+      ),
+      items: <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value: projectMenu[0],
+          child: Text('${projectMenu[0]}'),
+        ),
+        PopupMenuItem<String>(
+          value: projectMenu[1],
+          child: Text('${projectMenu[1]}'),
+        ),
+      ],
+    ).then((String? value) {
+      if (value != null) {
+        print('Selected: $value');
+      }
+    });
   }
 }

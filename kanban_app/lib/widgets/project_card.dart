@@ -1,16 +1,23 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/boards/board_screen.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/styles/colors.dart';
+import 'package:provider/provider.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;
-  const ProjectCard({required this.project, super.key});
+  final void Function(BuildContext, Offset) onMenuPressed;
+  const ProjectCard(
+      {required this.project, required this.onMenuPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isAdmin = authProvider.isAdmin;
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -41,7 +48,13 @@ class ProjectCard extends StatelessWidget {
                     color: MyColors.deepGreen,
                   ),
             ),
-            Icon(Icons.menu)
+            if (isAdmin)
+              GestureDetector(
+                onTapDown: (TapDownDetails details) {
+                  onMenuPressed(context, details.globalPosition);
+                },
+                child: Icon(Icons.more_vert),
+              ),
           ],
         ),
       ),

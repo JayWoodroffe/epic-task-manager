@@ -19,7 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLoading = false;
+  bool _isLoading = false; //to show if the api is loading the login results
+  bool _obscureText = true; //for toggling visibility in passwordfield
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +98,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextField(
                       style: Theme.of(context).textTheme.bodyMedium,
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: _obscureText,
                       cursorColor: MyColors.tertiary,
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: Icon(_obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off)),
                         filled: true,
                         fillColor: MyColors.cream,
                         labelText: 'Password',
