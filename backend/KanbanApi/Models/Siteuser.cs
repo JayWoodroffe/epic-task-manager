@@ -15,7 +15,7 @@ public partial class Siteuser:BaseModel
 
     public string? FullName { get; set; }
 
-    public string? Role { get; set; }
+    public string? Role { get; set; } = "User"; // Default role
 
     //public int? CreatedById { get; set; }
 

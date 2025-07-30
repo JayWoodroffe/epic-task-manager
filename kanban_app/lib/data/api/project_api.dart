@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:kanban_app/models/project.dart';
 
 class ProjectApi {
   static const String baseUrl = 'http://192.168.1.54:5285/api';
-  String userguid = "a4f4a006-6b13-11f0-8177-842afdcb8544";
 
   Future<List<dynamic>> getProjectsForUser() async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
     final response =
-        await http.get(Uri.parse('$baseUrl/users/$userguid/projects'));
+        await http.get(Uri.parse('$baseUrl/projects/myprojects'), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
       final json =

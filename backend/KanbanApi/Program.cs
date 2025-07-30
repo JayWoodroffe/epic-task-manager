@@ -3,8 +3,13 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using KanbanApi.Data;
 using KanbanApi.Services;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+
+using System.IdentityModel.Tokens.Jwt;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add user secrets 
@@ -17,6 +22,26 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 builder.Services.AddScoped<TokenService>();
 
+var jwtConfig = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) 
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+            ValidateIssuer = true,
+            ValidIssuer = "KanbanApi",
+            ValidateAudience = true,
+            ValidAudience = "KanbanApp",
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtConfig["Key"])) 
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // Add services
 builder.Services.AddControllers()
@@ -54,19 +79,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowFlutterApp"); // Use the CORS policy
 //app.Urls.Add(); //configure api to listen on the LAN
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-
-// Map API endpoints here for each resource (tasks, lists, etc.)
-// app.MapGet("/tasks", ... );
-app.MapGet("/tasks", async (MyDbContext db) =>
-{
-    var tasks = await db.Tasks.ToListAsync();
-    return tasks;
-});
 
 
 app.MapControllers();

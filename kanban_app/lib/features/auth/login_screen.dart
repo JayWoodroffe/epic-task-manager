@@ -23,6 +23,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true; //for toggling visibility in passwordfield
 
   @override
+  void dispose() {
+    // Dispose controllers when the widget is removed
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
@@ -42,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: MyColors.tertiary,
                           fontWeight: FontWeight.w900)),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 25),
 
                   //email input
                   Container(
@@ -82,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: 25),
 
                   //password input
                   Container(
@@ -131,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 25),
+                  SizedBox(height: 30),
 
                   //login button
                   SizedBox(
