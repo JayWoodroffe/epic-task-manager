@@ -36,25 +36,40 @@ public class ProjectController : ControllerBase
     //}
 
     //GET api/projects/{projectGuid}
+    [Authorize(Roles = "admin")] //only admins need access to all the information about the project
     [HttpGet("{projectGuid}")]
-    public async Task<ActionResult<Project>> GetProjectByGuid(Guid projectGuid)
+    public async Task<ActionResult<ProjectDto>> GetProjectByGuid(Guid projectGuid)
     {
         var projectId = await GuidHelpers.GetProjectIdByGuid(projectGuid, _context);
 
         if (projectId == null)
             return NotFound("Project not found.");
 
-        //fetching the project by ID and including active usersgithub
-
-        var project = await _context.Projects
+        //fetching the project by ID and including active users
+        var projectsWithUsers = await _context.Projects
             .Where(p => p.Id == projectId && p.IsActive)
-            .Include(p=>p.Users.Where(u => u.isActive))
+            .Include(p=>p.Users.Where(u => u.IsActive))
             .FirstOrDefaultAsync();
 
+        if(projectsWithUsers == null)
+            return NotFound("Project not found or inactive.");
 
-        if (project == null)
-            return NotFound();
-        return project;
+        //create the DTOs, including the profiles of all the users associated with the project
+        var projectsDto = new ProjectDto
+        {
+            Guid = projectsWithUsers.Guid,
+            Name = projectsWithUsers.Name,
+            Description = projectsWithUsers.Description,
+            //users are included so admin can see who is attached to the project
+            Users = projectsWithUsers.Users.Select(u => new UserDto
+            {
+                Guid = u.Guid,
+                FullName = u.FullName,
+                Email = u.Email
+            }).ToArray()
+        };
+
+        return projectsDto;
     }
 
     [HttpGet("{projectGuid}/boards")]
@@ -114,6 +129,10 @@ public class ProjectController : ControllerBase
 
     //TODO: make sure all metdadata fields are set correctly
     //make sure the project-user relationship is set up correctly to allow access
+
+    //step 1: extract user guid -> user id from token and use this in the createdby field? 
+    //step 2: add to the userproject table between this new project and the logged in user
+
     // POST: api/projects
     [Authorize(Roles = "admin")] //only admins can create projects
     [HttpPost]
@@ -130,34 +149,63 @@ public class ProjectController : ControllerBase
         if (userId == null)
             return NotFound("User not found.");
 
+        //retrieving the user entity of the user that is creating the project
+        var user = await _context.Siteusers.FindAsync(userId.Value);
+        if (user == null)
+            return NotFound("User entity not found.");
+
         project.Guid = Guid.NewGuid(); //generate a new GUID for the project
-        project.CreatedById = userId.Value; //set the creator of the project
+        project.CreatedById = user.Id; //set the creator of the project
+
+        project.Users = new List<Siteuser> { user }; //to create the entry in userproject table
 
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetProjectByGuid), new { guid = project.Guid }, project);
+
+        var projectDto = new ProjectDto
+        {
+            Guid = project.Guid,
+            Name = project.Name,
+            Description = project.Description,
+            Users = null
+        };
+        return CreatedAtAction(nameof(GetProjectByGuid), new { projectGuid = project.Guid }, projectDto);
     }
 
 
+    //update
     // PUT: api/projects/5
     [HttpPut("{guid}")]
-    public async Task<IActionResult> PutProject(Guid guid, Project project)
+    public async Task<IActionResult> PutProject(Guid guid, ProjectDto projectDto)
     {
-        if (id != project.Id)
+        if (guid != projectDto.Guid)
             return BadRequest();
-        _context.Entry(project).State = EntityState.Modified;
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProjectExists(id))
-                return NotFound();
-            else
-                throw;
-        }
+
+        var projectId = await GuidHelpers.GetProjectIdByGuid(guid, _context);
+        if (projectId == null)
+            return NotFound();
+
+        //retrieve the current project from the database 
+        var project = await _context.Projects
+            .Include(p => p.Users)
+            .FirstOrDefaultAsync(p => p.Id == projectId && p.IsActive);
+
+        if (project == null) return NotFound("Project not found");
+
+        //update the basic fields
+        project.Name = projectDto.Name;
+        project.Description = projectDto.Description;
+
+        //update the user assignments
+        var newUsers = await _context.Siteusers
+            .Where(u => projectDto.Users.Select(ud => ud.Guid).Contains(u.Guid))
+            .ToListAsync();
+
+        project.Users.Clear(); //clear existing users
+        project.Users = newUsers; //assign the new users
+
+        await _context.SaveChangesAsync();
         return NoContent();
     }
 

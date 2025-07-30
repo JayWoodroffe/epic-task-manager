@@ -9,7 +9,8 @@ public partial class Project: BaseModel
 
     public string? Description { get; set; }
 
-    public virtual Siteuser CreatedBy { get; set; } = null!;
+
+    public virtual Siteuser? CreatedBy { get; set; } = null!;
 
     public virtual Siteuser? UpdatedBy { get; set; }
 
