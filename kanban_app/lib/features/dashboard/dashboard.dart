@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
+import 'package:kanban_app/widgets/edit_project_bottom_sheet.dart';
 import 'package:kanban_app/widgets/project_card.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +62,9 @@ class _DashboardState extends State<Dashboard> {
               itemBuilder: (context, index) {
                 return ProjectCard(
                     project: projectProvider.projects[index],
-                    onMenuPressed: _displayProjectMenu);
+                    onMenuPressed: (context, position) {
+                      showEditProjectBottomSheet(context);
+                    });
               },
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
@@ -129,9 +132,20 @@ class _DashboardState extends State<Dashboard> {
         ),
       ],
     ).then((String? value) {
-      if (value != null) {
-        print('Selected: $value');
+      if (value != projectMenu[1]) {
+        showEditProjectBottomSheet(context);
       }
     });
+  }
+
+  void showEditProjectBottomSheet(BuildContext context) {
+    //only allow it to be dismissed by a button (either X or submit)
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      //pass the project that was clicked ot the screen
+      builder: (context) => EditTaskBottomSheet(),
+    );
   }
 }

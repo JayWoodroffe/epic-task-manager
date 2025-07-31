@@ -19,21 +19,33 @@ public class ProjectController : ControllerBase
 
     //removing methods that would expose the int ID (as this is a security risk)
     // GET: api/projects
+
+    [Authorize(Roles = "admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+    public async Task<ActionResult<IEnumerable<ProjectDto>>> GetProjects()
     {
-        return await _context.Projects.ToListAsync();
+        //fetching the project by ID and including active users
+        var projectsWithUsers = await _context.Projects
+            .Where(p => p.IsActive)
+            .Include(p => p.Users)
+            .ToListAsync();
+
+        var projectsDto = projectsWithUsers.Select(p => new ProjectDto
+        {
+            Guid = p.Guid,
+            Name = p.Name,
+            Description = p.Description,
+            Users = p.Users.Where(u => u.IsActive)
+            .Select(u => new UserDto
+            {
+                Guid = u.Guid,
+                FullName = u.FullName,
+                Email = u.Email
+            }).ToArray()
+        }).ToList();
+        return Ok(projectsDto);
     }
 
-    //// GET: api/projects/5
-    //[HttpGet("{id}")]
-    //public async Task<ActionResult<Project>> GetProject(int id)
-    //{
-    //    var project = await _context.Projects.FindAsync(id);
-    //    if (project == null)
-    //        return NotFound();
-    //    return project;
-    //}
 
     //GET api/projects/{projectGuid}
     [Authorize(Roles = "admin")] //only admins need access to all the information about the project
@@ -198,6 +210,7 @@ public class ProjectController : ControllerBase
         project.Description = projectDto.Description;
 
         //update the user assignments
+        //ensures that the user-project relationship is correctly mapped
         var newUsers = await _context.Siteusers
             .Where(u => projectDto.Users.Select(ud => ud.Guid).Contains(u.Guid))
             .ToListAsync();

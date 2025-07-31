@@ -5,16 +5,40 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 [Authorize] //ensure only logged-in users can access this controller
 [Route("api/users")]
 [ApiController]
 
-public class UserControlelr: ControllerBase
+public class UserControlelr : ControllerBase
 {
     private readonly MyDbContext _context;
     public UserControlelr(MyDbContext context)
     {
         _context = context;
+    }
+
+    //return UserDto objects of all users in the database
+    //GET: api/users/all
+    [Authorize(Roles = "admin")] //only admins can access this endpoint
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
+    {
+        var users = await _context.Siteusers
+            .Where(u => u.IsActive) //only active users
+            .ToListAsync();
+
+        if (users == null || !users.Any())
+            return NotFound("No active users found.");
+
+        var userDtos = users.Select(u => new UserDto
+        {
+            Email = u.Email,
+            FullName = u.FullName,
+            Guid = u.Guid
+        }).ToList();
+
+        return Ok(userDtos);
     }
 
 
