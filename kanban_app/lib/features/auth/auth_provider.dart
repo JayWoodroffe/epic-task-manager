@@ -6,7 +6,7 @@ class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
 
   String? _token;
-  String? _email;
+  // String? _email;
   String? _role;
   String? _guid;
 
@@ -24,7 +24,7 @@ class AuthProvider with ChangeNotifier {
 
       // Decode the JWT
       final payload = JwtDecoder.decode(_token!);
-      _email = payload['email'];
+      // _email = payload['email'];
       _guid = payload['guid'];
       _role = payload[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
@@ -47,7 +47,7 @@ class AuthProvider with ChangeNotifier {
     if (errorMessage == null) {
       _token = await _authService.getToken();
       final payload = JwtDecoder.decode(_token!);
-      _email = payload['email'];
+      // _email = payload['email'];
       _guid = payload['guid'];
       _role = payload[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
@@ -86,7 +86,7 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     _token = null;
-    _email = null;
+    // _email = null;
     _guid = null;
     _role = null;
     _authService.logout();

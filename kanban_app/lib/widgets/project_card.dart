@@ -9,12 +9,13 @@ import 'package:provider/provider.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;
-  final void Function(BuildContext, Offset) onMenuPressed;
+  final void Function(BuildContext, Offset, Project) onMenuPressed;
   const ProjectCard(
       {required this.project, required this.onMenuPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
+    //isAdmin is required for conditional display of the edit button (and thus, the ability to edit a project)
     final authProvider = Provider.of<AuthProvider>(context);
     final isAdmin = authProvider.isAdmin;
 
@@ -51,9 +52,9 @@ class ProjectCard extends StatelessWidget {
             if (isAdmin)
               GestureDetector(
                 onTapDown: (TapDownDetails details) {
-                  onMenuPressed(context, details.globalPosition);
+                  onMenuPressed(context, details.globalPosition, project);
                 },
-                child: Icon(Icons.more_vert),
+                child: Icon(Icons.edit),
               ),
           ],
         ),

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:kanban_app/widgets/create_task.dart';
+import 'package:kanban_app/widgets/my_button.dart';
 import 'package:kanban_app/widgets/task_card.dart';
 import 'package:kanban_app/styles/colors.dart';
 
@@ -62,42 +63,56 @@ class _ListScreenState extends State<ListScreen> {
 
             //create task button
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              child: GestureDetector(
-                  onTap: () => _showCreateTaskDialog(context),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: MyColors.secondary,
-                        border: Border.all(color: MyColors.charcoal, width: 3),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(5, 7),
-                              blurRadius: 0,
-                              color: MyColors.charcoal)
-                        ]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 30,
-                          color: MyColors.cream,
-                          weight: 50,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          "CREATE TASK",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: MyColors.cream),
-                        )
-                      ],
-                    ),
-                  )),
-            )
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                child: MyButton(
+                  label: 'CREATE TASK',
+                  onButtonPressed: () => _showCreateTaskDialog(context),
+                  color: MyColors.secondary,
+                  width: double.infinity,
+                  height: 40,
+                  buttonIcon: Icon(
+                    Icons.add,
+                    size: 30,
+                    color: MyColors.cream,
+                    weight: 50,
+                  ),
+                )
+
+                //  GestureDetector(
+                //     onTap: () => _showCreateTaskDialog(context),
+                //     child: Container(
+                //       height: 40,
+                //       decoration: BoxDecoration(
+                //           color: MyColors.secondary,
+                //           border: Border.all(color: MyColors.charcoal, width: 3),
+                //           borderRadius: BorderRadius.circular(14),
+                //           boxShadow: [
+                //             BoxShadow(
+                //                 offset: Offset(5, 7),
+                //                 blurRadius: 0,
+                //                 color: MyColors.charcoal)
+                //           ]),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(
+                //             Icons.add,
+                //             size: 30,
+                //             color: MyColors.cream,
+                //             weight: 50,
+                //           ),
+                //           SizedBox(width: 10),
+                //           Text(
+                //             "CREATE TASK",
+                //             style: Theme.of(context)
+                //                 .textTheme
+                //                 .bodyMedium
+                //                 ?.copyWith(color: MyColors.cream),
+                //           )
+                //         ],
+                //       ),
+                //     )),
+                )
           ],
         ),
       ),

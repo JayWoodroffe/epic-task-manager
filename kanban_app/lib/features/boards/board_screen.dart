@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kanban_app/features/dashboard/list_widget.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/create_task.dart';
+import 'package:kanban_app/widgets/my_button.dart';
 
 class BoardScreen extends StatefulWidget {
   const BoardScreen({super.key});
@@ -44,42 +45,20 @@ class _BoardScreenState extends State<BoardScreen> {
           Scaffold(
               body: Center(
             child: Padding(
-              padding: EdgeInsets.all(10),
-              child: GestureDetector(
-                  onTap: () => _showCreateListDialog(context),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                        color: MyColors.tertiary,
-                        border: Border.all(color: MyColors.charcoal, width: 3),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(5, 7),
-                              blurRadius: 0,
-                              color: MyColors.charcoal)
-                        ]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 30,
-                          color: MyColors.cream,
-                          weight: 50,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          "CREATE LIST",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: MyColors.cream),
-                        )
-                      ],
-                    ),
-                  )),
-            ),
+                padding: EdgeInsets.all(10),
+                child: MyButton(
+                  label: 'CREATE LIST',
+                  onButtonPressed: () => _showCreateListDialog(context),
+                  color: MyColors.tertiary,
+                  width: double.infinity,
+                  height: 40,
+                  buttonIcon: Icon(
+                    Icons.add,
+                    size: 30,
+                    color: MyColors.cream,
+                    weight: 50,
+                  ),
+                )),
           ))
         ],
       ),

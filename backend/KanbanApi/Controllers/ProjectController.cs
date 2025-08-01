@@ -19,7 +19,7 @@ public class ProjectController : ControllerBase
 
     //removing methods that would expose the int ID (as this is a security risk)
     // GET: api/projects
-
+    //when all projects are retrieved, preload their users too -> quick editing of projects for the admin
     [Authorize(Roles = "admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProjectDto>>> GetProjects()
@@ -48,6 +48,7 @@ public class ProjectController : ControllerBase
 
 
     //GET api/projects/{projectGuid}
+    //TODO: check if this is needed -> when a project is being retrieved, the admin would have clicked on a project that already had all this info as per the ^ method
     [Authorize(Roles = "admin")] //only admins need access to all the information about the project
     [HttpGet("{projectGuid}")]
     public async Task<ActionResult<ProjectDto>> GetProjectByGuid(Guid projectGuid)
@@ -84,8 +85,9 @@ public class ProjectController : ControllerBase
         return projectsDto;
     }
 
+    //retrieving all the boards associated with a project
     [HttpGet("{projectGuid}/boards")]
-    public async Task<ActionResult<IEnumerable<Board>>> GetBoardsByProject(Guid projectGuid)
+    public async Task<ActionResult<IEnumerable<BoardDto>>> GetBoardsByProject(Guid projectGuid)
     {
         var projectId = await GuidHelpers.GetProjectIdByGuid(projectGuid, _context);
 
@@ -99,9 +101,18 @@ public class ProjectController : ControllerBase
                 .Include(p => p.Boards)
                 .SelectMany(p => p.Boards)
                 .ToListAsync();
+
         if (boards == null || !boards.Any())
                 return NotFound();
-            return boards;
+
+        //convert boards to DTOs
+        var boardsDto = boards.Select(b => new BoardDto
+        {
+            Guid = b.Guid,
+            Name = b.Name,
+            Description = b.Description
+        });
+            return Ok(boardsDto);
     }
 
     //get projects based on logged in user

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
+import 'package:kanban_app/widgets/my_button.dart';
+import 'package:kanban_app/widgets/my_text_form.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -53,217 +55,50 @@ class _SignupScreenState extends State<SignupScreen> {
                   SizedBox(height: 25),
 
                   //name input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: MyColors.tertiary,
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  MyTextField(
                       controller: _fullNameController,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Name',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
+                      label: 'Full Name',
+                      hideContent: false,
+                      textColor: MyColors.tertiary),
 
                   SizedBox(height: 25),
 
                   //email input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: MyColors.tertiary,
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  MyTextField(
                       controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Email',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
+                      label: 'Email',
+                      hideContent: false,
+                      textColor: MyColors.tertiary),
 
                   SizedBox(height: 25),
 
                   //password input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                            color: MyColors.tertiary,
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  MyTextField(
                       controller: _passwordController,
-                      obscureText: _obscureTextInitial,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureTextInitial = !_obscureTextInitial;
-                              });
-                            },
-                            icon: Icon(_obscureTextInitial
-                                ? Icons.visibility
-                                : Icons.visibility_off)),
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Password',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
+                      label: 'Password',
+                      hideContent: true,
+                      textColor: MyColors.tertiary),
 
                   SizedBox(height: 25),
 
                   //confirm password input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                            color: MyColors.tertiary,
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  MyTextField(
                       controller: _passwordConfirmController,
-                      obscureText: _obscureTextConfirm,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureTextConfirm = !_obscureTextConfirm;
-                              });
-                            },
-                            icon: Icon(_obscureTextConfirm
-                                ? Icons.visibility
-                                : Icons.visibility_off)),
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Confirm Password',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
+                      label: 'Confirm Password',
+                      hideContent: true,
+                      textColor: MyColors.tertiary),
 
                   SizedBox(height: 30),
 
                   //signup button
-                  SizedBox(
-                    height: 50,
+                  MyButton(
+                    label: 'Sign Up',
+                    onButtonPressed: () => checkPasswords(
+                        _passwordController.text,
+                        _passwordConfirmController.text,
+                        _authProvider),
+                    color: MyColors.tertiary,
                     width: double.infinity,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 0,
-                              color: MyColors.charcoal,
-                              offset: Offset(5, 7))
-                        ],
-                      ),
-                      child: TextButton(
-                          onPressed: () {
-                            checkPasswords(_passwordController.text,
-                                _passwordConfirmController.text, _authProvider);
-                          },
-                          child: Text(
-                            "Sign Up",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: MyColors.cream),
-                          ),
-                          style: TextButton.styleFrom(
-                            side:
-                                BorderSide(color: MyColors.charcoal, width: 3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            backgroundColor: MyColors.tertiary,
-                          )),
-                    ),
                   ),
                 ],
               ),

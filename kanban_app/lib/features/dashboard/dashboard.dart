@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/edit_project_bottom_sheet.dart';
+import 'package:kanban_app/widgets/my_button.dart';
 import 'package:kanban_app/widgets/project_card.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +23,18 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProjectProvider>(context, listen: false)
-          .fetchProjectsForUser();
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final isAdmin = authProvider.isAdmin;
+      final projectProvider =
+          Provider.of<ProjectProvider>(context, listen: false);
+
+      //distinction here: admins are able to see all projects
+      //projects loaded with fetchAllProjects includes additional information (the users associated with the project)
+      if (isAdmin) {
+        projectProvider.fetchAllProjects();
+      } else {
+        projectProvider.fetchProjectsForUser();
+      }
     });
   }
 
@@ -62,49 +74,26 @@ class _DashboardState extends State<Dashboard> {
               itemBuilder: (context, index) {
                 return ProjectCard(
                     project: projectProvider.projects[index],
-                    onMenuPressed: (context, position) {
-                      showEditProjectBottomSheet(context);
+                    onMenuPressed: (context, position, project) {
+                      showEditProjectBottomSheet(context, project);
                     });
               },
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: (isAdmin)
-          ? GestureDetector(
-              onTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Container(
-                  width: 150,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: MyColors.secondary,
-                      border: Border.all(color: MyColors.charcoal, width: 3),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: Offset(5, 7),
-                            blurRadius: 0,
-                            color: MyColors.charcoal)
-                      ]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add,
-                        size: 30,
-                        color: MyColors.cream,
-                        weight: 50,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "PROJECT",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.cream),
-                      )
-                    ],
-                  ),
+          ? Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              child: MyButton(
+                label: 'PROJECT',
+                onButtonPressed: () {},
+                color: MyColors.secondary,
+                width: 150,
+                height: 40,
+                buttonIcon: Icon(
+                  Icons.add,
+                  size: 30,
+                  color: MyColors.cream,
+                  weight: 50,
                 ),
               ),
             )
@@ -112,40 +101,16 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _displayProjectMenu(BuildContext context, Offset position) {
-    showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        position.dx,
-        position.dy,
-        position.dx + 1.0,
-        position.dy + 1.0,
-      ),
-      items: <PopupMenuEntry<String>>[
-        PopupMenuItem<String>(
-          value: projectMenu[0],
-          child: Text('${projectMenu[0]}'),
-        ),
-        PopupMenuItem<String>(
-          value: projectMenu[1],
-          child: Text('${projectMenu[1]}'),
-        ),
-      ],
-    ).then((String? value) {
-      if (value != projectMenu[1]) {
-        showEditProjectBottomSheet(context);
-      }
-    });
-  }
-
-  void showEditProjectBottomSheet(BuildContext context) {
+  void showEditProjectBottomSheet(BuildContext context, Project project) {
     //only allow it to be dismissed by a button (either X or submit)
     showModalBottomSheet(
+      isDismissible: false,
+      enableDrag: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       //pass the project that was clicked ot the screen
-      builder: (context) => EditTaskBottomSheet(),
+      builder: (context) => EditProjectBottomSheet(project: project),
     );
   }
 }

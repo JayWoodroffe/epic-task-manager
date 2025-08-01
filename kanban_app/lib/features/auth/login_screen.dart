@@ -6,6 +6,8 @@ import 'package:kanban_app/features/auth/signup_screen.dart';
 import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/features/auth/auth_service.dart';
+import 'package:kanban_app/widgets/my_button.dart';
+import 'package:kanban_app/widgets/my_text_form.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,131 +54,68 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 25),
 
                   //email input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: MyColors.tertiary,
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Email',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
+                  MyTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                    hideContent: false,
+                    keyBoardType: TextInputType.emailAddress,
+                    textColor: MyColors.tertiary,
                   ),
 
                   SizedBox(height: 25),
 
                   //password input
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 0,
-                            offset: Offset(5, 7),
-                            color: MyColors.tertiary,
-                          )
-                        ]),
-                    child: TextField(
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  MyTextField(
                       controller: _passwordController,
-                      obscureText: _obscureText,
-                      cursorColor: MyColors.tertiary,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            icon: Icon(_obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off)),
-                        filled: true,
-                        fillColor: MyColors.cream,
-                        labelText: 'Password',
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: MyColors.tertiary),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: MyColors.charcoal, width: 3),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
+                      label: 'Password',
+                      hideContent: true,
+                      textColor: MyColors.tertiary),
 
                   SizedBox(height: 30),
 
                   //login button
-                  SizedBox(
-                    height: 50,
+                  MyButton(
+                    label: 'Login',
+                    onButtonPressed: () => _handleLogin(_authProvider),
+                    color: MyColors.tertiary,
                     width: double.infinity,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 0,
-                              color: MyColors.charcoal,
-                              offset: Offset(5, 7))
-                        ],
-                      ),
-                      child: TextButton(
-                          onPressed: () {
-                            _handleLogin(_authProvider);
-                          },
-                          child: Text(
-                            "Login",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: MyColors.cream),
-                          ),
-                          style: TextButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: MyColors.charcoal, width: 3),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            backgroundColor: MyColors.tertiary,
-                          )),
-                    ),
                   ),
+                  // SizedBox(
+                  //   height: 50,
+                  //   width: double.infinity,
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //             blurRadius: 0,
+                  //             color: MyColors.charcoal,
+                  //             offset: Offset(5, 7))
+                  //       ],
+                  //     ),
+                  //     child: TextButton(
+                  //         onPressed: () {
+                  //           _handleLogin(_authProvider);
+                  //         },
+                  //         child: Text(
+                  //           "Login",
+                  //           style: Theme.of(context)
+                  //               .textTheme
+                  //               .bodyMedium
+                  //               ?.copyWith(color: MyColors.cream),
+                  //         ),
+                  //         style: TextButton.styleFrom(
+                  //           shape: RoundedRectangleBorder(
+                  //             side: BorderSide(
+                  //                 color: MyColors.charcoal, width: 3),
+                  //             borderRadius: BorderRadius.circular(16),
+                  //           ),
+                  //           backgroundColor: MyColors.tertiary,
+                  //         )),
+                  //   ),
+                  // ),
 
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
 
                   //sign up text
                   Row(
