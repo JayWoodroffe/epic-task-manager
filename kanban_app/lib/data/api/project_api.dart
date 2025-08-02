@@ -56,10 +56,79 @@ class ProjectApi {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+      print(response.body);
       final List<dynamic> data = json['\$values'];
       return data.map((json) => User.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load projects');
+      throw Exception('Failed to load users');
+    }
+  }
+
+  Future<void> updateProject(Project project) async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
+    final response = await http.put(
+      Uri.parse('$baseUrl/projects/${project.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(project.toJson()),
+    );
+
+    if (response.statusCode == 204) {
+      // NoContent — update succeeded, nothing to return
+      return;
+    } else if (response.statusCode == 400) {
+      throw Exception('Bad request: mismatched GUIDs');
+    } else if (response.statusCode == 404) {
+      throw Exception('Project not found');
+    } else {
+      throw Exception('Failed to update project: ${response.statusCode}');
+    }
+  }
+
+  Future<void> createProject(Project project) async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
+    final response = await http.post(
+      Uri.parse('$baseUrl/projects'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(project.toCreateJson()),
+    );
+
+    if (response.statusCode == 201) {
+      // NoContent — update succeeded, nothing to return
+      return;
+    } else if (response.statusCode == 400) {
+      throw Exception('Bad request: check GUIDs or JSON structure');
+    } else if (response.statusCode == 404) {
+      throw Exception('Project not found');
+    } else {
+      throw Exception('Failed to update project: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deleteProject(Project project) async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
+    final response = await http.delete(
+      Uri.parse('$baseUrl/projects/${project.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      // NoContent — update succeeded, nothing to return
+      return;
+    } else if (response.statusCode == 400) {
+      throw Exception('Bad request: check GUIDs or JSON structure');
+    } else if (response.statusCode == 404) {
+      throw Exception('Project not found');
+    } else {
+      throw Exception('Failed to update project: ${response.statusCode}');
     }
   }
 }

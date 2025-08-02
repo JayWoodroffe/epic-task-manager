@@ -8,15 +8,15 @@ import 'package:kanban_app/widgets/my_button.dart';
 import 'package:kanban_app/widgets/project_card.dart';
 import 'package:provider/provider.dart';
 
-//dashboard displays all of the projects that auser has acess to
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+//dashboard displays all of the projects that user has access to
+class ProjectDashboard extends StatefulWidget {
+  const ProjectDashboard({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<ProjectDashboard> createState() => _ProjectDashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _ProjectDashboardState extends State<ProjectDashboard> {
   final List<String> projectMenu = ['Delete', 'Edit'];
 
   @override
@@ -33,7 +33,7 @@ class _DashboardState extends State<Dashboard> {
       if (isAdmin) {
         projectProvider.fetchAllProjects();
       } else {
-        projectProvider.fetchProjectsForUser();
+        projectProvider.fetchProjectsForUser(); 
       }
     });
   }
@@ -85,7 +85,9 @@ class _DashboardState extends State<Dashboard> {
               padding: EdgeInsets.symmetric(vertical: 20.0),
               child: MyButton(
                 label: 'PROJECT',
-                onButtonPressed: () {},
+                onButtonPressed: () {
+                  showCreateProjectBottomScreen(context);
+                },
                 color: MyColors.secondary,
                 width: 150,
                 height: 40,
@@ -101,16 +103,63 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void showEditProjectBottomSheet(BuildContext context, Project project) {
-    //only allow it to be dismissed by a button (either X or submit)
-    showModalBottomSheet(
+  //creating a new empty project and passing it to the modal
+  void showCreateProjectBottomScreen(BuildContext context) async {
+    final emptyProject = Project(description: "", id: "", name: "", users: []);
+
+    final createdProject = await showModalBottomSheet(
       isDismissible: false,
       enableDrag: false,
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       //pass the project that was clicked ot the screen
-      builder: (context) => EditProjectBottomSheet(project: project),
+      builder: (_) =>
+          EditProjectBottomSheet(project: emptyProject, isEditing: false),
     );
+
+    if (createdProject != null) {
+      try {
+        await Provider.of<ProjectProvider>(context, listen: false)
+            .createProject(createdProject);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Project created successfully")),
+        );
+      } catch (e) {
+        print("Failed to create project: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to create project: $e")),
+        );
+      }
+    }
+  }
+
+  //passsing the selected project to the modal for editing
+  void showEditProjectBottomSheet(BuildContext context, Project project) async {
+    //only allow it to be dismissed by a button (either X or submit)
+    final updatedProject = await showModalBottomSheet(
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      //pass the project that was clicked ot the screen
+      builder: (_) => EditProjectBottomSheet(project: project, isEditing: true),
+    );
+
+    if (updatedProject != null) {
+      try {
+        await Provider.of<ProjectProvider>(context, listen: false)
+            .updateProject(updatedProject);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Project saved successfully")),
+        );
+      } catch (e) {
+        print("Failed to save project: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to save project: $e")),
+        );
+      }
+    }
   }
 }

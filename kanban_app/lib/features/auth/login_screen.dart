@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success) {
       //login successful, navigate to dashboard
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Dashboard()),
+        MaterialPageRoute(builder: (context) => ProjectDashboard()),
       );
     } else {
       //login failed, display error

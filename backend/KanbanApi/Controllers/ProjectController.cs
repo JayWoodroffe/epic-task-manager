@@ -159,7 +159,7 @@ public class ProjectController : ControllerBase
     // POST: api/projects
     [Authorize(Roles = "admin")] //only admins can create projects
     [HttpPost]
-    public async Task<ActionResult<Project>> PostProject(Project project)
+    public async Task<ActionResult<Project>> PostProject([FromBody] ProjectDto projectDto) //from body ensures that it takes the data directly from the json body
     {
         var userGuidString = User.FindFirst("guid")?.Value;
         if (!Guid.TryParse(userGuidString, out var userGuid))
@@ -177,23 +177,61 @@ public class ProjectController : ControllerBase
         if (user == null)
             return NotFound("User entity not found.");
 
-        project.Guid = Guid.NewGuid(); //generate a new GUID for the project
-        project.CreatedById = user.Id; //set the creator of the project
+        //map DTO to entity
+        var project = new Project
+        {
+            Guid = Guid.NewGuid(),
+            Name = projectDto.Name,
+            Description = projectDto.Description,
+            CreatedById = user.Id,
+            IsActive = true,
+            Users = new List<Siteuser>()
+        };
 
-        project.Users = new List<Siteuser> { user }; //to create the entry in userproject table
+        project.Users.Add(user);//add the creator of the project to the project
 
+        //add users from DTO if any
+        if (projectDto.Users != null && projectDto.Users.Any())
+        {
+            //load users from the guids
+            var userGuids = projectDto.Users.Select(u => u.Guid).ToList();
+            var usersFromDb = await _context.Siteusers
+                .Where(u => userGuids.Contains(u.Guid))
+                .ToListAsync();
+
+            foreach (var u in usersFromDb) //add these users to the project
+            {
+                //avoid duplicates
+                if (!project.Users.Contains(u))
+                    project.Users.Add(u);
+            }
+        }
 
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
 
-        var projectDto = new ProjectDto
+        // Return DTO for response
+        var resultDto = new ProjectDto
         {
             Guid = project.Guid,
             Name = project.Name,
             Description = project.Description,
-            Users = null
+            Users = project.Users.Select(u => new UserDto
+            {
+                Guid = u.Guid,
+                FullName = u.FullName,
+                Email = u.Email
+            }).ToArray()
         };
-        return CreatedAtAction(nameof(GetProjectByGuid), new { projectGuid = project.Guid }, projectDto);
+
+        //var projectDto = new ProjectDto
+        //{
+        //    Guid = project.Guid,
+        //    Name = project.Name,
+        //    Description = project.Description,
+        //    Users = null
+        //};
+        return CreatedAtAction(nameof(GetProjectByGuid), new { projectGuid = project.Guid }, resultDto);
     }
 
 

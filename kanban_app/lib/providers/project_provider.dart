@@ -42,8 +42,8 @@ class ProjectProvider with ChangeNotifier {
   }
 
   Future<void> fetchAllUsers() async {
-    _isLoading = true;
-    notifyListeners();
+    // _isLoading = true;
+    // notifyListeners();
 
     try {
       _users = await ProjectApi().getAllUsers();
@@ -51,5 +51,41 @@ class ProjectProvider with ChangeNotifier {
     } catch (e) {
       print('Error fetching users: $e');
     }
+  }
+
+  Future<void> updateProject(Project project) async {
+    try {
+      await ProjectApi().updateProject(project);
+    } catch (e) {
+      print('Error updating project: $e');
+    }
+
+    //update only the changed project in your local list
+    final index = _projects.indexWhere((p) => p.id == project.id);
+    if (index != -1) {
+      _projects[index] = project;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createProject(Project project) async {
+    try {
+      await ProjectApi().createProject(project);
+    } catch (e) {
+      print('Error updating project: $e');
+    }
+
+    await fetchAllProjects();
+  }
+
+  Future<void> deleteProject(Project project) async {
+    try {
+      await ProjectApi().deleteProject(project);
+    } catch (e) {
+      print('Error deleting project: $e');
+    }
+
+    _projects.remove(project);
+    notifyListeners();
   }
 }

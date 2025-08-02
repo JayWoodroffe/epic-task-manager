@@ -13,7 +13,9 @@ import 'package:provider/provider.dart';
 
 class EditProjectBottomSheet extends StatefulWidget {
   final Project project;
-  const EditProjectBottomSheet({required this.project, super.key});
+  final bool isEditing;
+  const EditProjectBottomSheet(
+      {required this.project, super.key, required this.isEditing});
 
   @override
   State<EditProjectBottomSheet> createState() => _EditProjectBottomSheetState();
@@ -24,10 +26,11 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
   final _descriptionController = TextEditingController();
   final _addUserController = TextEditingController();
   List<User> _selectedUsers = []; //users attached to the project
-  bool _isLoadingUsers = true;
   List<User> _allUsers = []; //all of the users in the system
   User? _selectedUser;
-  bool isEdited = false;
+
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -39,10 +42,16 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadAllUsers();
     });
+
+    //when the user starts typing again, selected user is cleared
+    // _addUserController.addListener(() {
+    //   setState(() => _selectedUser = null);
+    // });
   }
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _nameController.dispose();
     _descriptionController.dispose();
     _addUserController.dispose();
@@ -57,7 +66,6 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width - 30,
-          height: MediaQuery.of(context).size.height * 0.8,
           decoration: BoxDecoration(
               border: Border.all(color: MyColors.charcoal, width: 5),
               color: MyColors.cream,
@@ -80,12 +88,57 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                 //top row with edit heading and exit button
                 children: [
                   Text(
-                    "Edit Project",
+                    widget.isEditing ? "Edit Project" : "New Project",
                     style: TextStyle(fontSize: 20),
                   ),
                   IconButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        //checking if the current state of the project is different than the project passed into the modal
+                        final currentProject = Project(
+                          id: widget.project.id,
+                          name: _nameController.text.trim(),
+                          description: _descriptionController.text.trim(),
+                          users: _selectedUsers,
+                        );
+
+                        //checks if the project has been changed at all - if yes, prompt to save
+                        if (!currentProject.isSameAs(widget.project)) {
+                          // show dialog: "Save changes?"
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Unsaved changes"),
+                              content: Text(
+                                  "Do you want to save changes before closing?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context)
+                                      .pop(), // dismiss dialog
+                                  child: Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context) // dismiss dialog
+                                      ..pop() // dismiss bottom sheet
+                                      ..pop(currentProject); // save the changes
+                                  },
+                                  child: Text("Save"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(); // dismiss dialog
+                                    Navigator.of(context)
+                                        .pop(); // dismiss bottom sheet without saving
+                                  },
+                                  child: Text("Discard"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          Navigator.of(context).pop(); // no changes, just close
+                        }
                       },
                       icon: Icon(
                         Icons.cancel_outlined,
@@ -131,31 +184,44 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
 
               //textfield to search the email addresses of all the users in the system - can add them to the project
               ConstrainedBox(
-                constraints: BoxConstraints(minHeight: 50),
+                constraints: BoxConstraints(minHeight: 50, maxHeight: 300),
                 child: RawAutocomplete<User>(
+                  textEditingController: _addUserController,
+                  focusNode: _focusNode,
                   optionsBuilder: (TextEditingValue textEditingValue) {
+                    print('[DEBUG] Input: ${textEditingValue.text}');
+                    print('[DEBUG] All users: $_allUsers');
+
                     if (textEditingValue.text.isEmpty)
                       return const Iterable<User>.empty();
-                    return _allUsers.where((user) =>
-                        user.email
-                            .toLowerCase()
-                            .contains(textEditingValue.text.toLowerCase()) &&
-                        !_selectedUsers.contains(user));
+                    final filtered = _allUsers
+                        .where((user) =>
+                            user.email.toLowerCase().contains(
+                                textEditingValue.text.toLowerCase()) &&
+                            !_selectedUsers.contains(user))
+                        .toList();
+
+                    print('[DEBUG] Filtered: $filtered');
+                    return filtered;
                   },
+                  //when a user is selected from the autocomplete options
                   onSelected: (User user) {
-                    _addUserController.text = user.email;
+                    _addUserController.text = user
+                        .email; //displays selected user's full email address in the textfield
                     //store the selected user
                     setState(() => _selectedUser = user);
                   },
                   displayStringForOption: (User user) => user.email,
-                  fieldViewBuilder: (BuildContext context, _,
-                      FocusNode focusNode, VoidCallback onFieldSubmitted) {
+                  fieldViewBuilder: (BuildContext context,
+                      TextEditingController textEditingController,
+                      FocusNode focusNode,
+                      VoidCallback onFieldSubmitted) {
                     return Row(
                       children: [
                         Expanded(
                           child: TextField(
                             focusNode: focusNode,
-                            controller: _addUserController,
+                            controller: textEditingController,
                             style: TextStyle(
                                 color: MyColors.charcoal, fontSize: 15),
                             cursorColor: MyColors.tertiary,
@@ -180,6 +246,7 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                             ),
                           ),
                         ),
+                        //icon for actually adding the user to the project
                         IconButton(
                           icon: Icon(Icons.add),
                           onPressed: () {
@@ -196,6 +263,8 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                       ],
                     );
                   },
+
+                  //controls how the autocomplete options are displayed
                   optionsViewBuilder: (BuildContext context,
                       AutocompleteOnSelected<User> onSelected,
                       Iterable<User> options) {
@@ -223,37 +292,71 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                 ),
               ),
 
-              // ConstrainedBox(
-              //   constraints: BoxConstraints(minHeight: 50),
-              //   // height: 50,
-              //   child: TextField(
-              //       style: TextStyle(color: MyColors.charcoal, fontSize: 18),
-              //       cursorColor: MyColors.tertiary,
-              //       controller: _addUserController,
-              //       decoration: InputDecoration(
-              //         labelStyle: Theme.of(context)
-              //             .textTheme
-              //             .bodyMedium
-              //             ?.copyWith(color: MyColors.tertiary),
-              //         prefixIcon: Icon(
-              //           Icons.search_outlined,
-              //           color: Colors.grey.shade700,
-              //         ),
-              //         focusedBorder: OutlineInputBorder(
-              //           borderSide:
-              //               BorderSide(color: MyColors.charcoal, width: 3),
-              //           borderRadius: BorderRadius.circular(16),
-              //         ),
-              //         enabledBorder: OutlineInputBorder(
-              //           borderSide:
-              //               BorderSide(color: MyColors.charcoal, width: 3),
-              //           borderRadius: BorderRadius.circular(16),
-              //         ),
-              //       )),
-              // )
+              SizedBox(height: 10),
+
+              //if the user is editing and not creating - give option to delete the project
+              widget.isEditing
+                  ? Column(
+                      children: [
+                        MyButton(
+                          color: MyColors.secondary,
+                          label: "DELETE PROJECT",
+                          onButtonPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Are you sure?"),
+                                content: Text(
+                                    "Do you want to delete this project? Delete is irreversable."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context)
+                                        .pop(), // dismiss dialog
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await Provider.of<ProjectProvider>(
+                                              context,
+                                              listen: false)
+                                          .deleteProject(widget
+                                              .project); //deletes the project using the project api
+                                      Navigator.of(context) // dismiss dialog
+                                        ..pop() // dismiss bottom sheet
+                                        ..pop(); // save the changes
+                                    },
+                                    child: Text("Delete"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          width: double.infinity,
+                        ),
+                        SizedBox(height: 10)
+                      ],
+                    )
+                  : SizedBox(),
+
+              //button to save or create
               MyButton(
-                  label: 'Save',
-                  onButtonPressed: () {},
+                  label: widget.isEditing ? 'SAVE' : 'CREATE',
+                  onButtonPressed: () {
+                    final newOrUpdatedProject = Project(
+                      id: widget.project.id,
+                      name: _nameController.text.trim(),
+                      description: _descriptionController.text.trim(),
+                      users: _selectedUsers,
+                    );
+                    Navigator.of(context).pop(
+                        newOrUpdatedProject); //passes the project back to the dashboard for updating/creating
+                  },
+                  buttonIcon: widget.isEditing
+                      ? null
+                      : Icon(
+                          Icons.add,
+                          color: MyColors.cream,
+                        ),
                   color: MyColors.tertiary,
                   width: double.infinity)
             ],
@@ -263,18 +366,22 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
     );
   }
 
+  //asynchronously load all the users in the company
   Future<void> _loadAllUsers() async {
     final projectProvider =
         Provider.of<ProjectProvider>(context, listen: false);
     await projectProvider.fetchAllUsers();
 
+    //check if the modal is up
     if (mounted) {
       setState(() {
         _allUsers = projectProvider.users.cast<User>();
+        print('[MY_APP] Loaded users: $_allUsers');
       });
     }
   }
 
+  //when an x is clicked next to a user email
   void removeUser(User user) {
     if (mounted) {
       setState(() {
