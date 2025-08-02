@@ -85,35 +85,7 @@ public class ProjectController : ControllerBase
         return projectsDto;
     }
 
-    //retrieving all the boards associated with a project
-    [HttpGet("{projectGuid}/boards")]
-    public async Task<ActionResult<IEnumerable<BoardDto>>> GetBoardsByProject(Guid projectGuid)
-    {
-        var projectId = await GuidHelpers.GetProjectIdByGuid(projectGuid, _context);
-
-        if(projectId == null)
-                return NotFound();
-
-        // Fetch boards associated with the project
-        //can use include due to the scaffolding of the project model 
-        var boards = await _context.Projects
-                .Where(p => p.Id == projectId)
-                .Include(p => p.Boards)
-                .SelectMany(p => p.Boards)
-                .ToListAsync();
-
-        if (boards == null || !boards.Any())
-                return NotFound();
-
-        //convert boards to DTOs
-        var boardsDto = boards.Select(b => new BoardDto
-        {
-            Guid = b.Guid,
-            Name = b.Name,
-            Description = b.Description
-        });
-            return Ok(boardsDto);
-    }
+   
 
     //get projects based on logged in user
     [HttpGet("myprojects")]

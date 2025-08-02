@@ -5,6 +5,7 @@ import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/providers/board_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/board_card.dart';
+import 'package:kanban_app/widgets/edit_board_bottom_screen.dart';
 import 'package:kanban_app/widgets/my_button.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +24,10 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //providers are accessed in initState in order to know which projects to fetch
       final boardProvider = Provider.of<BoardProvider>(context, listen: false);
+      boardProvider.currentProjectId = widget.project.id;
 
       //fetching all the boards for the selected project
-      boardProvider.fetchBoardsForProject(widget.project.id);
+      boardProvider.fetchBoardsForProject();
 
       setState(() {});
     });
@@ -45,17 +47,19 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
         leading: Padding(
             padding: EdgeInsets.only(left: 10),
             child: Icon(
-              Icons.bolt,
-              size: 50,
+              Icons.auto_awesome_rounded,
+              size: 40,
               color: MyColors.tertiary,
             )),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Boards for ${widget.project.name}",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: MyColors.tertiary,
-              ),
+          widget.project.name,
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: MyColors.tertiary,
+          ),
         ),
       ),
       backgroundColor: Colors.white,
@@ -64,19 +68,13 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
               child: CircularProgressIndicator(
               color: MyColors.tertiary,
             ))
-          : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 1.0, // Square items
-              ),
+          : ListView.builder(
               itemCount: boardProvider.boards.length,
               itemBuilder: (context, index) {
                 return BoardCard(
                     board: boardProvider.boards[index],
                     onEditPressed: (board) {
-                      //define editing a board popup (modal?)
+                      showEditBoardBottomSheet(board);
                     });
               },
             ),
@@ -85,9 +83,9 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
           ? Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0),
               child: MyButton(
-                label: 'Board',
+                label: 'BOARD',
                 onButtonPressed: () {
-                  //create new board
+                  showCreateProjectBottomScreen();
                 },
                 color: MyColors.secondary,
                 width: 150,
@@ -102,5 +100,64 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
             )
           : null,
     );
+  }
+
+  //creating a new empty project and passing it to the modal
+  void showCreateProjectBottomScreen() async {
+    final emptyBoard = Board(description: "", id: "", name: "");
+
+    final createdBoard = await showModalBottomSheet(
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      //pass the project that was clicked ot the screen
+      builder: (_) => EditBoardBottomSheet(board: emptyBoard, isEditing: false),
+    );
+
+    if (createdBoard != null) {
+      try {
+        await Provider.of<BoardProvider>(context, listen: false)
+            .createBoard(createdBoard, widget.project.id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Board created successfully")),
+        );
+      } catch (e) {
+        print("Failed to board project: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to create board: $e")),
+        );
+      }
+    }
+  }
+
+  //passsing the selected board to the modal for editing
+  void showEditBoardBottomSheet(Board board) async {
+    //only allow it to be dismissed by a button (either X or submit)
+    final updatedBoard = await showModalBottomSheet(
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      //pass the project that was clicked ot the screen
+      builder: (_) => EditBoardBottomSheet(board: board, isEditing: true),
+    );
+
+    if (updatedBoard != null) {
+      try {
+        await Provider.of<BoardProvider>(context, listen: false)
+            .updateBoard(updatedBoard);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Board saved successfully")),
+        );
+      } catch (e) {
+        print("Failed to save board: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to save board: $e")),
+        );
+      }
+    }
   }
 }

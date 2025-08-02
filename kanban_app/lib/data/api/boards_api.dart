@@ -9,8 +9,8 @@ class BoardApi {
 
   Future<List<dynamic>> getBoardsForProject(String projectGuid) async {
     final token = await FlutterSecureStorage().read(key: 'auth_token');
-    final response =
-        await http.get(Uri.parse('$baseUrl/boards/$projectGuid'), headers: {
+    final response = await http
+        .get(Uri.parse('$baseUrl/boards/project/$projectGuid'), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
@@ -23,14 +23,14 @@ class BoardApi {
       print(response.body);
       return data.map((json) => Board.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load boards');
+      throw Exception('Failed to load boards for project: $projectGuid');
     }
   }
 
   Future<void> updateBoard(Board board) async {
     final token = await FlutterSecureStorage().read(key: 'auth_token');
     final response = await http.put(
-      Uri.parse('$baseUrl/projects/${board.id}'),
+      Uri.parse('$baseUrl/boards/${board.id}'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -44,9 +44,59 @@ class BoardApi {
     } else if (response.statusCode == 400) {
       throw Exception('Bad request: mismatched GUIDs');
     } else if (response.statusCode == 404) {
-      throw Exception('Project not found');
+      throw Exception('Board not found');
     } else {
-      throw Exception('Failed to update project: ${response.statusCode}');
+      throw Exception('Failed to update board: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deleteBoard(Board board) async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
+    final response = await http.delete(
+      Uri.parse('$baseUrl/boards/${board.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 204 || response.statusCode == 200) {
+      return; // Success: no content or optional body
+    } else if (response.statusCode == 400) {
+      throw Exception('Bad request: invalid board ID or format');
+    } else if (response.statusCode == 404) {
+      throw Exception('Board not found');
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized: invalid or expired token');
+    } else if (response.statusCode == 403) {
+      throw Exception(
+          'Forbidden: you do not have permission to delete this board');
+    } else {
+      throw Exception(
+          'Failed to delete board: ${response.statusCode} - ${response.body}');
+    }
+  }
+
+  Future<void> createBoard(Board board, String projectId) async {
+    final token = await FlutterSecureStorage().read(key: 'auth_token');
+    final response = await http.post(
+      Uri.parse('$baseUrl/boards/$projectId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(board.toCreateJson()),
+    );
+
+    if (response.statusCode == 201) {
+      // NoContent — update succeeded, nothing to return
+      return;
+    } else if (response.statusCode == 400) {
+      throw Exception('Bad request: check GUIDs or JSON structure');
+    } else if (response.statusCode == 404) {
+      throw Exception('Board not found');
+    } else {
+      throw Exception('Failed to create board: ${response.statusCode}');
     }
   }
 }

@@ -43,10 +43,8 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
       _loadAllUsers();
     });
 
-    //when the user starts typing again, selected user is cleared
-    // _addUserController.addListener(() {
-    //   setState(() => _selectedUser = null);
-    // });
+    _nameController.addListener(() => setState(
+        () {})); //to trigger if the save/create button is available or not
   }
 
   @override
@@ -116,14 +114,18 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                                       .pop(), // dismiss dialog
                                   child: Text("Cancel"),
                                 ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context) // dismiss dialog
-                                      ..pop() // dismiss bottom sheet
-                                      ..pop(currentProject); // save the changes
-                                  },
-                                  child: Text("Save"),
-                                ),
+                                _nameController.text.trim().isNotEmpty
+                                    ? TextButton(
+                                        onPressed: () {
+                                          Navigator.of(
+                                              context) // dismiss dialog
+                                            ..pop() // dismiss bottom sheet
+                                            ..pop(
+                                                currentProject); // save the changes
+                                        },
+                                        child: Text("Save"),
+                                      )
+                                    : SizedBox(),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context)
@@ -151,13 +153,21 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                   controller: _nameController,
                   label: 'Project Name',
                   hideContent: false,
-                  textColor: MyColors.charcoal),
-              SizedBox(height: 25),
+                  textColor: MyColors.tertiary),
+              if (_nameController.text.trim().isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, left: 12),
+                  child: Text(
+                    'Project name is required',
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+              SizedBox(height: 20),
               MyTextField(
                 controller: _descriptionController,
                 label: 'Description',
                 hideContent: false,
-                textColor: MyColors.charcoal,
+                textColor: MyColors.tertiary,
                 multiline: true,
               ),
               SizedBox(height: 25),
@@ -165,7 +175,10 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
                   "Users:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: MyColors.tertiary),
                 ),
               ),
               Column(
@@ -292,7 +305,7 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                 ),
               ),
 
-              SizedBox(height: 10),
+              SizedBox(height: 40),
 
               //if the user is editing and not creating - give option to delete the project
               widget.isEditing
@@ -341,16 +354,20 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
               //button to save or create
               MyButton(
                   label: widget.isEditing ? 'SAVE' : 'CREATE',
-                  onButtonPressed: () {
-                    final newOrUpdatedProject = Project(
-                      id: widget.project.id,
-                      name: _nameController.text.trim(),
-                      description: _descriptionController.text.trim(),
-                      users: _selectedUsers,
-                    );
-                    Navigator.of(context).pop(
-                        newOrUpdatedProject); //passes the project back to the dashboard for updating/creating
-                  },
+                  //disable save feature if the name is empty
+                  onButtonPressed: _nameController.text.trim().isEmpty
+                      ? () {}
+                      : () {
+                          final newOrUpdatedProject = Project(
+                            id: widget.project.id,
+                            name: _nameController.text.trim(),
+                            description: _descriptionController.text.trim(),
+                            users: _selectedUsers,
+                          );
+
+                          Navigator.of(context).pop(
+                              newOrUpdatedProject); //passes the project back to the dashboard for updating/creating
+                        },
                   buttonIcon: widget.isEditing
                       ? null
                       : Icon(

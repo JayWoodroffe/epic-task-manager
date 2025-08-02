@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/data/api/boards_api.dart';
 import 'package:kanban_app/models/board.dart';
-import 'package:kanban_app/models/project.dart';
-import 'package:kanban_app/data/api/project_api.dart';
 
 class BoardProvider with ChangeNotifier {
   List<dynamic> _boards = [];
+  String currentProjectId = "";
   bool _isLoading = false;
 
   List<dynamic> get boards => _boards;
   bool get isLoading => _isLoading;
 
-  Future<void> fetchBoardsForProject(String projectGuid) async {
+  Future<void> fetchBoardsForProject() async {
     _isLoading = true;
     notifyListeners();
+    // currentProjectId = projectGuid;
 
     try {
-      _boards = await BoardApi().getBoardsForProject(projectGuid);
+      _boards = await BoardApi().getBoardsForProject(currentProjectId);
       print('Fetched ${_boards.length} boards.');
     } catch (e) {
       print('Error fetching boards: $e');
@@ -26,11 +26,27 @@ class BoardProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> createBoard(Board board, String projectId) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await BoardApi().createBoard(board, projectId);
+    } catch (e) {
+      print('Error creating board: $e');
+    }
+
+    await fetchBoardsForProject();
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<void> updateBoard(Board board) async {
+    _isLoading = true;
+    notifyListeners();
     try {
       await BoardApi().updateBoard(board);
     } catch (e) {
-      print('Error updating project: $e');
+      print('Error updating board: $e');
     }
 
     //update only the changed project in your local list
@@ -39,5 +55,18 @@ class BoardProvider with ChangeNotifier {
       _boards[index] = board;
       notifyListeners();
     }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteBoard(Board board) async {
+    try {
+      await BoardApi().deleteBoard(board);
+    } catch (e) {
+      print('Error deleting board: $e');
+    }
+
+    _boards.remove(board);
+    notifyListeners();
   }
 }

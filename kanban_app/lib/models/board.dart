@@ -22,4 +22,12 @@ class Board {
         'name': name,
         'description': description,
       };
+
+  bool isSameAs(Board other) {
+    if (id != other.id) return false;
+    if (name != other.name) return false;
+    if (description != other.description) return false;
+
+    return true;
+  }
 }

@@ -43,8 +43,6 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    // final authProvider = Provider.of<AuthProvider>(context);
-    // final isAdmin = authProvider.isAdmin;
     final projectProvider = Provider.of<ProjectProvider>(context);
 
     return Scaffold(
@@ -54,16 +52,18 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
             padding: EdgeInsets.only(left: 10),
             child: Icon(
               Icons.bolt,
-              size: 50,
+              size: 40,
               color: MyColors.tertiary,
             )),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           "Projects",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: MyColors.tertiary,
-              ),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: MyColors.tertiary,
+          ),
         ),
       ),
       backgroundColor: MyColors.cream,

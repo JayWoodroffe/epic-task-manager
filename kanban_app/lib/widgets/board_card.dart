@@ -27,14 +27,14 @@ class BoardCard extends StatelessWidget {
           }));
         },
         child: Container(
-          width: MediaQuery.of(context).size.width / 2 - 20,
+          width: MediaQuery.of(context).size.width - 20,
           padding: EdgeInsets.all(10),
           alignment: Alignment.topLeft,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
                   blurRadius: 0,
-                  offset: Offset(3, 5),
+                  offset: Offset(5, 7),
                   color: MyColors.tertiary),
             ],
             border: Border.all(width: 3, color: MyColors.tertiary),
@@ -43,6 +43,7 @@ class BoardCard extends StatelessWidget {
           ),
           margin: EdgeInsets.only(left: 15, right: 15, top: 15),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //header and edit button
               Row(
@@ -69,6 +70,10 @@ class BoardCard extends StatelessWidget {
                 board.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           ),

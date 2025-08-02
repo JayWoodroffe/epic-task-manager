@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/auth_provider.dart';
-import 'package:kanban_app/features/boards/board_screen.dart';
 import 'package:kanban_app/features/dashboard/boards_dashboard.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/styles/colors.dart';
@@ -42,6 +41,7 @@ class ProjectCard extends StatelessWidget {
         ),
         margin: EdgeInsets.only(left: 15, right: 15, top: 15),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //project's name and an icon for editing the project
             Row(
@@ -67,6 +67,10 @@ class ProjectCard extends StatelessWidget {
               project.description,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.normal),
             ),
           ],
         ),

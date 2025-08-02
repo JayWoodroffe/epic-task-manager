@@ -1,4 +1,3 @@
-import 'package:kanban_app/models/base_model.dart';
 import 'package:kanban_app/models/user.dart';
 
 class Project {

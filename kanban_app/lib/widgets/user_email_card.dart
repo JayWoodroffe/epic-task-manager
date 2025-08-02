@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:kanban_app/models/user.dart';
-import 'package:kanban_app/styles/colors.dart';
 
 class UserEmailCard extends StatelessWidget {
   final User user;
