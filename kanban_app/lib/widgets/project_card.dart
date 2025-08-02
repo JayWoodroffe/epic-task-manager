@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/boards/board_screen.dart';
+import 'package:kanban_app/features/dashboard/boards_dashboard.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class ProjectCard extends StatelessWidget {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
           //TODO clicking on a project will go to a screen displaying all the board linked to that project, and clicking on a board will go to board screen
-          return BoardScreen();
+          return BoardsDashboard(project: project);
         }));
       },
       child: Container(
@@ -40,22 +41,33 @@ class ProjectCard extends StatelessWidget {
           color: Colors.white,
         ),
         margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Text(
-              project.name,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: MyColors.deepGreen,
+            //project's name and an icon for editing the project
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  project.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: MyColors.deepGreen,
+                      ),
+                ),
+                if (isAdmin)
+                  GestureDetector(
+                    onTapDown: (TapDownDetails details) {
+                      onMenuPressed(context, details.globalPosition, project);
+                    },
+                    child: Icon(Icons.edit),
                   ),
+              ],
             ),
-            if (isAdmin)
-              GestureDetector(
-                onTapDown: (TapDownDetails details) {
-                  onMenuPressed(context, details.globalPosition, project);
-                },
-                child: Icon(Icons.edit),
-              ),
+            SizedBox(height: 5),
+            Text(
+              project.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),

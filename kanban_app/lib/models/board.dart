@@ -1,16 +1,25 @@
-import 'package:kanban_app/models/base_model.dart';
+class Board {
+  final String name;
+  final String description;
+  final String id;
 
-class Board extends BaseModel {
-  String name;
-  String projectId;
+  Board({required this.name, required this.description, required this.id});
 
-  Board(
-      {required super.id,
-      required super.createdOn,
-      required super.createdBy,
-      super.updatedOn,
-      super.updatedBy,
-      super.isActive = true,
-      required this.name,
-      required this.projectId});
+  factory Board.fromJson(Map<String, dynamic> json) => Board(
+        id: json['guid'] as String,
+        name: json['name'],
+        description: json['description'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'guid': id,
+        'name': name,
+        'description': description,
+      };
+
+//only used when creating a new project and guid key shouldn't be included
+  Map<String, dynamic> toCreateJson() => {
+        'name': name,
+        'description': description,
+      };
 }

@@ -17,14 +17,15 @@ class ProjectDashboard extends StatefulWidget {
 }
 
 class _ProjectDashboardState extends State<ProjectDashboard> {
-  final List<String> projectMenu = ['Delete', 'Edit'];
+  late bool isAdmin;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      //providers are accessed in initState in order to know which projects to fetch
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final isAdmin = authProvider.isAdmin;
+      isAdmin = authProvider.isAdmin;
       final projectProvider =
           Provider.of<ProjectProvider>(context, listen: false);
 
@@ -33,15 +34,17 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
       if (isAdmin) {
         projectProvider.fetchAllProjects();
       } else {
-        projectProvider.fetchProjectsForUser(); 
+        projectProvider.fetchProjectsForUser();
       }
+
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final isAdmin = authProvider.isAdmin;
+    // final authProvider = Provider.of<AuthProvider>(context);
+    // final isAdmin = authProvider.isAdmin;
     final projectProvider = Provider.of<ProjectProvider>(context);
 
     return Scaffold(
