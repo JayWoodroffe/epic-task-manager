@@ -5,15 +5,15 @@ import 'package:kanban_app/styles/colors.dart';
 class CreateTask extends StatefulWidget {
   final Function(String taskName) onConfirm;
   final VoidCallback onCancel;
-  final String object; //'task', 'list' (board/project - potentially )
+  final String object; //'task', 'list'
   final int inputLength;
 
-  const CreateTask(
-      {required this.object,
-      required this.inputLength,
-      required this.onConfirm,
-      required this.onCancel,
-      super.key});
+  const CreateTask({
+    required this.object,
+    required this.inputLength,
+    required this.onConfirm,
+    required this.onCancel,
+  });
 
   @override
   State<CreateTask> createState() => _CreateTaskState();

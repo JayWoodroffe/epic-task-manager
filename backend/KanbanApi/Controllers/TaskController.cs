@@ -120,7 +120,7 @@ namespace KanbanApi.Controllers
                 ListId = listGuid, //returning the list GUID
             };
 
-            return CreatedAtAction(nameof(GetTaskByGuid), new { taskGuid = task.Guid }, resultsDto);
+           return CreatedAtAction(nameof(GetTaskByGuid), new { guid = task.Guid }, resultsDto);
         }
 
         // PUT: api/tasks/5
@@ -188,5 +188,27 @@ namespace KanbanApi.Controllers
         {
             return _context.Tasks.Any(e => e.Id == id);
         }
+
+
+        //move tasks between lists
+        [HttpPut("{taskGuid}/move")]
+        public async Task<IActionResult> MoveTask(Guid taskGuid, [FromBody] TaskMoveDto moveDto)
+        {
+            var taskId = await GuidHelpers.GetTaskIdByGuid(taskGuid, _context);
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == taskId && t.IsActive);
+            if (task == null) return NotFound("Task not found.");
+
+            var listId = await GuidHelpers.GetListIdByGuid(moveDto.NewListId, _context);
+            var newList = await _context.Lists.FirstOrDefaultAsync(l => l.Id == listId);
+            if (newList == null) return NotFound("List not found.");
+
+            task.ListId = newList.Id;
+            task.Position = moveDto.NewOrder;
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
+
+    

@@ -94,6 +94,9 @@ public class ListController : ControllerBase
         var board = await _context.Boards
             .Where(b => b.IsActive && b.Id == boardId)
             .Include(b => b.Lists.Where(l => l.IsActive))
+                .ThenInclude(l => l.Status) //include the status of the list
+            .Include(b => b.Lists)
+                .ThenInclude(l => l.Tasks) //eager-load the status and tasks for each list
             .FirstOrDefaultAsync();
 
         var lists = board?.Lists;
@@ -105,9 +108,10 @@ public class ListController : ControllerBase
         {
             Guid = b.Guid,
             Name = b.Name,
-            Status = b.Status.Name, //status name instead of ID
-            Color = b.Status.Color, //status color
-            Tasks = b.Tasks.Where(t => t.IsActive).Select(t => new TaskDto
+            Status = b.Status.Name ?? "Unknown", //status name instead of ID
+            Position = b.Position,
+            Color = b.Status.Color ?? "#9AEBA3", //status color
+            Tasks = (b.Tasks ?? new List<KanbanApi.Models.Task>()).Where(t => t.IsActive).Select(t => new TaskDto
             {
                 Guid = t.Guid,
                 Name = t.Name,
@@ -240,5 +244,34 @@ public class ListController : ControllerBase
     {
         return _context.Lists.Any(e => e.Id == id);
     }
+
+    // PUT: api/lists/{listGuid}/tasks/reorder
+    [HttpPut("{listGuid}/tasks/reorder")]
+    public async Task<IActionResult> UpdateTaskOrder(Guid listGuid, [FromBody] List<TaskOrderUpdateDto> updatedTasks)
+    {
+        var listId = await GuidHelpers.GetListIdByGuid(listGuid, _context);
+        if (listId == null)
+            return NotFound("List not found.");
+
+        // Load all tasks of the list to match and update
+        var tasks = await _context.Tasks
+            .Where(t => t.ListId == listId && t.IsActive)
+            .ToListAsync();
+
+        foreach (var update in updatedTasks)
+        {
+            var task = tasks.FirstOrDefault(t => t.Guid == update.TaskGuid);
+            if (task != null)
+            {
+                task.Position = update.Position;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+
+
 
 }

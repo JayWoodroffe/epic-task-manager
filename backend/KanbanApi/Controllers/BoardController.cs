@@ -36,8 +36,8 @@ public class BoardController : ControllerBase
     }
 
     //GET api/boards/{boardsGuid}
-    //TODO: check if this is needed -> when a project is being retrieved, the admin would have clicked on a project that already had all this info as per the ^ method
-    [Authorize(Roles = "admin")] //only admins need access to all the information about the project
+    //TODO: check if this is needed -> when a board is being retrieved, the admin would have clicked on a board that already had all this info as per the ^ method
+    [Authorize(Roles = "admin")] //only admins need access to all the information about the board
     [HttpGet("{boardGuid}")]
     public async Task<ActionResult<BoardDto>> GetBoardByGuid(Guid guid)
     {
@@ -46,7 +46,7 @@ public class BoardController : ControllerBase
         if (boardId == null)
             return NotFound("Board not found.");
 
-        //fetching the project by ID and including active users
+        //fetching the board by ID 
         var board = await _context.Boards
             .Where(p => p.Id == boardId && p.IsActive)
             .FirstOrDefaultAsync();
@@ -54,7 +54,7 @@ public class BoardController : ControllerBase
         if (board == null)
             return NotFound("Board not found or inactive.");
 
-        //create the DTOs, including the profiles of all the users associated with the project
+        //create the DTOs
         var boardDto = new BoardDto
         {
             Guid = board.Guid,
@@ -160,7 +160,7 @@ public class BoardController : ControllerBase
         if (boardId == null)
             return NotFound();
 
-        //retrieve the current project from the database 
+        //retrieve the current board from the database 
         var board = await _context.Boards
             .FirstOrDefaultAsync(b => b.Id == boardId && b.IsActive);
 
@@ -180,7 +180,7 @@ public class BoardController : ControllerBase
     public async Task<IActionResult> DeleteBoard(Guid guid)
     {
         if (guid == null)
-            return Unauthorized("Missing project GUID in token");
+            return Unauthorized("Missing board GUID in token");
 
 
         //convert guid to int ID

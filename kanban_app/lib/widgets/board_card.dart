@@ -23,7 +23,7 @@ class BoardCard extends StatelessWidget {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
             //TODO clicking on a project will go to a screen displaying all the board linked to that project, and clicking on a board will go to board screen
-            return BoardScreen();
+            return BoardScreen(board: this.board);
           }));
         },
         child: Container(
