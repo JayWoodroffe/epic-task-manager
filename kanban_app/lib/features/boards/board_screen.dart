@@ -22,6 +22,8 @@ class _BoardScreenState extends State<BoardScreen> {
   late PageController
       _pageController; //for controlling which page is visible - allowing the dragging of tasks between pages
 
+  int _currentPage = 0;
+
   void setDragging(bool dragging) {
     setState(() {
       _isDragging = dragging;
@@ -31,7 +33,7 @@ class _BoardScreenState extends State<BoardScreen> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(initialPage: _currentPage);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //providers are accessed in initState in order to know which board to fetch
@@ -40,7 +42,7 @@ class _BoardScreenState extends State<BoardScreen> {
 
       //fetching all the boards for the selected project
       listProvider.fetchListsForBoard();
-      setState(() {});
+      // setState(() {});
     });
   }
 
@@ -79,43 +81,56 @@ class _BoardScreenState extends State<BoardScreen> {
             ),
           ),
         ),
-        body: PageView.builder(
-          controller: _pageController,
-          physics: _isDragging
-              ? NeverScrollableScrollPhysics() //disable scrolling between lists while task is being dragged
-              : AlwaysScrollableScrollPhysics(),
-          itemCount: listProvider.lists.length + 1,
-          itemBuilder: (context, index) {
-            if (index ==
-                listProvider.lists.length) //on the page after all the lists
-            {
-              return Scaffold(
-                body: Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: MyButton(
-                      label: 'CREATE LIST',
-                      onButtonPressed: () => _showCreateListDialog(context),
-                      color: MyColors.tertiary,
-                      width: double.infinity,
-                      height: 40,
-                      buttonIcon:
-                          Icon(Icons.add, size: 30, color: MyColors.cream),
-                    ),
-                  ),
+        body: listProvider.isLoadingList
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: MyColors.tertiary,
                 ),
-              );
-            }
-            return ListScreen(
-              list: listProvider.lists[index],
-              onDragStarted: () => setDragging(true),
-              onDragEnded: () => setDragging(false),
-              pageController: _pageController,
-              currentPageIndex: index,
-              totalPages: listProvider.lists.length,
-            );
-          },
-        ));
+              )
+            //for displaying all the lists in a board
+            : PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  _currentPage = index;
+                },
+                physics: _isDragging
+                    ? NeverScrollableScrollPhysics() //disable scrolling between lists while task is being dragged
+                    : AlwaysScrollableScrollPhysics(),
+                itemCount: listProvider.lists.length + 1,
+                itemBuilder: (context, index) {
+                  if (index ==
+                      listProvider
+                          .lists.length) //on the page after all the lists
+                  {
+                    //button for creating a new list
+                    return Scaffold(
+                      body: Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: MyButton(
+                            label: 'CREATE LIST',
+                            onButtonPressed: () =>
+                                _showCreateListDialog(context),
+                            color: MyColors.tertiary,
+                            width: double.infinity,
+                            height: 40,
+                            buttonIcon: Icon(Icons.add,
+                                size: 30, color: MyColors.cream),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return ListScreen(
+                    list: listProvider.lists[index],
+                    onDragStarted: () => setDragging(true),
+                    onDragEnded: () => setDragging(false),
+                    pageController: _pageController,
+                    currentPageIndex: index,
+                    totalPages: listProvider.lists.length,
+                  );
+                },
+              ));
   }
 
   //method to display the Create List dialog window

@@ -68,16 +68,18 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
               child: CircularProgressIndicator(
               color: MyColors.tertiary,
             ))
-          : ListView.builder(
-              itemCount: boardProvider.boards.length,
-              itemBuilder: (context, index) {
-                return BoardCard(
-                    board: boardProvider.boards[index],
-                    onEditPressed: (board) {
-                      showEditBoardBottomSheet(board);
-                    });
-              },
-            ),
+          : boardProvider.boards.isEmpty
+              ? Center(child: Text("No boards in this project yet."))
+              : ListView.builder(
+                  itemCount: boardProvider.boards.length,
+                  itemBuilder: (context, index) {
+                    return BoardCard(
+                        board: boardProvider.boards[index],
+                        onEditPressed: (board) {
+                          showEditBoardBottomSheet(board);
+                        });
+                  },
+                ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: (isAdmin)
           ? Padding(

@@ -82,7 +82,7 @@ class ListApi {
   Future<void> createList(ListType list, String boardId) async {
     final token = await FlutterSecureStorage().read(key: 'auth_token');
     final response = await http.post(
-      Uri.parse('$baseUrl/lists/$boardId'),
+      Uri.parse('$baseUrl/lists/board/$boardId'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

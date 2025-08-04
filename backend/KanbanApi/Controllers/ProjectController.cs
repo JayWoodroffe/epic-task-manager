@@ -219,6 +219,18 @@ public class ProjectController : ControllerBase
         if (projectId == null)
             return NotFound();
 
+        //getting the user that is updating the project
+        var userGuidString = User.FindFirst("guid")?.Value;
+        if (!Guid.TryParse(userGuidString, out var userGuid))
+        {
+            return Unauthorized("Invalid user GUID in token");
+        }
+
+        //convert user guid to int ID
+        var userId = await GuidHelpers.GetUserIdByGuid(userGuid, _context);
+        if (userId == null)
+            return NotFound("User not found.");
+
         //retrieve the current project from the database 
         var project = await _context.Projects
             .Include(p => p.Users)
@@ -229,6 +241,8 @@ public class ProjectController : ControllerBase
         //update the basic fields
         project.Name = projectDto.Name;
         project.Description = projectDto.Description;
+        project.UpdatedById = userId.Value; //set the user that updated the project
+        project.UpdatedOn = DateTime.UtcNow; //set the updated date
 
         //update the user assignments
         //ensures that the user-project relationship is correctly mapped

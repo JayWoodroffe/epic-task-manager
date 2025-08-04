@@ -8,13 +8,15 @@ import 'package:kanban_app/models/task.dart';
 class ListProvider with ChangeNotifier {
   List<dynamic> _lists = [];
   String currentBoardId = "";
-  bool _isLoading = false;
+  bool _isLoadingList = false;
+  bool _isLoadingTask = false;
 
   List<dynamic> get lists => _lists;
-  bool get isLoading => _isLoading;
+  bool get isLoadingList => _isLoadingList;
+  bool get isLoadingTask => _isLoadingTask;
 
   Future<void> fetchListsForBoard() async {
-    _isLoading = true;
+    _isLoadingList = true;
     notifyListeners();
 
     try {
@@ -24,12 +26,12 @@ class ListProvider with ChangeNotifier {
       print('Error fetching lists: $e');
     }
 
-    _isLoading = false;
+    _isLoadingList = false;
     notifyListeners();
   }
 
   Future<void> createList(ListType list, String boardId) async {
-    _isLoading = true;
+    _isLoadingList = true;
     notifyListeners();
     try {
       await ListApi().createList(list, boardId);
@@ -38,12 +40,12 @@ class ListProvider with ChangeNotifier {
     }
 
     await fetchListsForBoard();
-    _isLoading = false;
+    _isLoadingList = false;
     notifyListeners();
   }
 
   Future<void> updateList(ListType list) async {
-    _isLoading = true;
+    _isLoadingTask = true;
     notifyListeners();
     try {
       await ListApi().updateList(list);
@@ -57,7 +59,7 @@ class ListProvider with ChangeNotifier {
       _lists[index] = list;
       notifyListeners();
     }
-    _isLoading = false;
+    _isLoadingTask = false;
     notifyListeners();
   }
 
@@ -73,7 +75,7 @@ class ListProvider with ChangeNotifier {
   }
 
   Future<void> deleteTask(Task task) async {
-    _isLoading = true;
+    _isLoadingTask = true;
     notifyListeners();
     try {
       await ListApi().deleteTask(task);
@@ -90,13 +92,13 @@ class ListProvider with ChangeNotifier {
       list.tasks
           .removeWhere((t) => t.id == task.id); //remove the task from the list
       _lists[listIndex] = list; //update the list
-      _isLoading = false;
+      _isLoadingTask = false;
       notifyListeners();
     }
   }
 
   Future<void> reorderTasks(List<Task> updatedTasks, String listId) async {
-    _isLoading = true;
+    _isLoadingTask = true;
     notifyListeners();
 
     try {
@@ -114,36 +116,58 @@ class ListProvider with ChangeNotifier {
       print('Error reordering tasks: $e');
     }
 
-    _isLoading = false;
+    _isLoadingTask = false;
     notifyListeners();
   }
 
   Future<void> createTask(Task task, String listId) async {
-    _isLoading = true;
+    _isLoadingTask = true;
     notifyListeners();
     try {
       await ListApi().createTask(task, listId);
+      //updating the local data
+      final listIndex = _lists.indexWhere((l) => l.id == listId);
+      if (listIndex != -1) {
+        final list = _lists[listIndex] as ListType;
+        list.tasks.add(task);
+        _lists[listIndex] = list;
+      }
     } catch (e) {
       print('Error creating list: $e');
     }
 
-    await fetchListsForBoard();
-    _isLoading = false;
+    // await fetchListsForBoard();
+    _isLoadingTask = false;
     notifyListeners();
   }
 
   Future<void> moveTaskToList(Task task, String oldListId) async {
-    _isLoading = true;
+    _isLoadingTask = true;
     notifyListeners();
 
     try {
+      //updating the local data
+      //remove task from previous list
+      final oldListIndex = _lists.indexWhere((l) => l.id == oldListId);
+      if (oldListIndex != -1) {
+        final oldList = _lists[oldListIndex] as ListType;
+        oldList.tasks.removeWhere((t) => t.id == task.id);
+        _lists[oldListIndex] = oldList;
+      }
+
+      //add task to new list
+      final newListIndex = _lists.indexWhere((l) => l.id == task.listId);
+      if (newListIndex != -1) {
+        final newList = _lists[newListIndex] as ListType;
+        newList.tasks.add(task);
+        _lists[newListIndex] = newList;
+      }
       await ListApi().moveTask(task);
-      await fetchListsForBoard(); // refresh all lists/tasks
     } catch (e) {
       print('Error moving task: $e');
     }
 
-    _isLoading = false;
+    _isLoadingTask = false;
     notifyListeners();
   }
 }

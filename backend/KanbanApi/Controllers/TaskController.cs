@@ -65,6 +65,7 @@ namespace KanbanApi.Controllers
             return taskDto;
         }
 
+        //create a new task on a specific list
         // POST: api/tasks
         [HttpPost]
         public async Task<ActionResult<TaskDto>> PostTask(Guid listGuid, [FromBody] TaskDto taskDto)
@@ -131,6 +132,24 @@ namespace KanbanApi.Controllers
             if (guid != taskDto.Guid)
                 return BadRequest();
 
+            //getting the user that is updating the task
+            var userGuidString = User.FindFirst("guid")?.Value;
+            if (!Guid.TryParse(userGuidString, out var userGuid))
+            {
+                return Unauthorized("Invalid user GUID in token");
+            }
+
+            //convert user guid to int ID
+            var userId = await GuidHelpers.GetUserIdByGuid(userGuid, _context);
+            if (userId == null)
+                return NotFound("User not found.");
+
+            //retrieving the user entity of the user that is updating the task
+            var user = await _context.Siteusers.FindAsync(userId.Value);
+            if (user == null)
+                return NotFound("User entity not found.");
+
+
             var taskId = await GuidHelpers.GetTaskIdByGuid(guid, _context);
             if (taskId == null)
                 return NotFound("Task not found.");
@@ -146,6 +165,8 @@ namespace KanbanApi.Controllers
             //update the basic fields
             task.Name = taskDto.Name;
             task.Position = taskDto.Position;
+            task.UpdatedBy = user;
+            task.UpdatedOn = DateTime.UtcNow;
             // Convert nullable int? to int with null check
             var listIdNullable = await GuidHelpers.GetListIdByGuid(taskDto.ListId, _context);
             if (listIdNullable == null)

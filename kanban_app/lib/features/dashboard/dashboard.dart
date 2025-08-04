@@ -72,16 +72,18 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
               child: CircularProgressIndicator(
               color: MyColors.tertiary,
             ))
-          : ListView.builder(
-              itemCount: projectProvider.projects.length,
-              itemBuilder: (context, index) {
-                return ProjectCard(
-                    project: projectProvider.projects[index],
-                    onMenuPressed: (context, position, project) {
-                      showEditProjectBottomSheet(context, project);
-                    });
-              },
-            ),
+          : projectProvider.projects.isEmpty
+              ? Center(child: Text("No projects assigned yet."))
+              : ListView.builder(
+                  itemCount: projectProvider.projects.length,
+                  itemBuilder: (context, index) {
+                    return ProjectCard(
+                        project: projectProvider.projects[index],
+                        onMenuPressed: (context, position, project) {
+                          showEditProjectBottomSheet(context, project);
+                        });
+                  },
+                ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       floatingActionButton: (isAdmin)
           ? Padding(

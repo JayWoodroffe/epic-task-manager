@@ -71,17 +71,59 @@ class _ListScreenState extends State<ListScreen> {
                       border: Border.all(color: MyColors.charcoal, width: 3),
                       color: MyColors.tertiary,
                       borderRadius: BorderRadius.circular(16)),
-                  child: Center(
-                    child: Text(
-                      widget.list.name,
-                      style: TextStyle(fontSize: 22, color: MyColors.cream),
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.list.name,
+                            style:
+                                TextStyle(fontSize: 22, color: MyColors.cream),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Are you sure?"),
+                              content: Text(
+                                  "Do you want to delete this List? Delete is irreversable."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context)
+                                      .pop(), // dismiss dialog
+                                  child: Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await listProvider.deleteList(widget
+                                        .list); //deletes the list from the board
+                                    Navigator.of(context) // dismiss dialog
+                                        .pop();
+                                  },
+                                  child: Text("Delete"),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          size: 30,
+                          color: MyColors.cream,
+                          weight: 50,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
                   ),
                 ),
                 SizedBox(height: 20),
 
                 Expanded(
-                  child: listProvider.isLoading
+                  child: listProvider.isLoadingTask
                       ? Center(
                           child: CircularProgressIndicator(
                             color: MyColors.tertiary,

@@ -23,7 +23,7 @@ public partial class List:BaseModel
 
     public int BoardId { get; set; }
 
-    public int StatusId { get; set; }
+    public int? StatusId { get; set; }
 
     public int Position { get; set; }
 

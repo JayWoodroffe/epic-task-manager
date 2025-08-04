@@ -40,8 +40,8 @@ class ListType {
   Map<String, dynamic> toCreateJson() => {
         'name': name,
         'position': position,
-        'status': status,
-        'color': color,
+        'status': status.isNotEmpty ? status : "",
+        'color': color.isNotEmpty ? color : "",
         'tasks': tasks.map((u) => u.toJson()).toList(),
       };
 

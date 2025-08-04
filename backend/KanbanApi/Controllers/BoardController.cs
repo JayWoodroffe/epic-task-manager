@@ -160,6 +160,18 @@ public class BoardController : ControllerBase
         if (boardId == null)
             return NotFound();
 
+        //getting the user that is updating the board
+        var userGuidString = User.FindFirst("guid")?.Value;
+        if (!Guid.TryParse(userGuidString, out var userGuid))
+        {
+            return Unauthorized("Invalid user GUID in token");
+        }
+
+        //convert user guid to int ID
+        var userId = await GuidHelpers.GetUserIdByGuid(userGuid, _context);
+        if (userId == null)
+            return NotFound("User not found.");
+
         //retrieve the current board from the database 
         var board = await _context.Boards
             .FirstOrDefaultAsync(b => b.Id == boardId && b.IsActive);
@@ -169,6 +181,8 @@ public class BoardController : ControllerBase
         //update the basic fields
         board.Name = boardDto.Name;
         board.Description = boardDto.Description;
+        board.UpdatedById = userId.Value; //set the user that updated the board
+        board.UpdatedOn = DateTime.UtcNow; //set the updated date
 
         await _context.SaveChangesAsync();
         return NoContent();

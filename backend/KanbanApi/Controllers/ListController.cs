@@ -125,7 +125,7 @@ public class ListController : ControllerBase
 
     // POST: api/lists
     //create new lists
-    [HttpPost("{boardGuid}")]
+    [HttpPost("board/{boardGuid}")]
     public async Task<ActionResult<Board>> PostList(Guid boardGuid, [FromBody] ListDto listDto) //from body ensures that it takes the data directly from the json body
     {
         //getting the board that this list is being created in
@@ -150,26 +150,43 @@ public class ListController : ControllerBase
         if (user == null)
             return NotFound("User entity not found.");
 
+        //allowing the status to be null - relationship between status and list not full established 
+        int? statusId = await _context.Statuses
+    .Where(s => s.Name == listDto.Status && s.IsActive)
+    .Select(s => (int?)s.Id)
+    .FirstOrDefaultAsync();
+
+        if (statusId == null)
+        {
+            // Fallback: either hardcode or look up a default
+            statusId = await _context.Statuses
+                .Where(s => s.Name == "To Do" && s.IsActive)
+                .Select(s => (int?)s.Id)
+                .FirstOrDefaultAsync();
+        }
+
         //map DTO to entity
         var list = new List
         {
             Guid = Guid.NewGuid(),
             Name = listDto.Name,
-            StatusId = await _context.Statuses
-                .Where(s => s.Name == listDto.Status && s.IsActive)
-                .Select(s => s.Id)
-                .FirstOrDefaultAsync(),
-            //Color = listDto.Color,
+            StatusId = statusId,
             CreatedById = user.Id,
             CreatedOn = DateTime.UtcNow,
             IsActive = true,
             BoardId = board.Id,
             Position = listDto.Position
         };
+        try
+        {
+            _context.Lists.Add(list);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
 
-
-        _context.Lists.Add(list);
-        await _context.SaveChangesAsync();
 
         // Return DTO for response
         var resultDto = new ListDto
@@ -194,6 +211,24 @@ public class ListController : ControllerBase
         if (listId == null)
             return NotFound();
 
+        //getting the user that is updating the list
+        var userGuidString = User.FindFirst("guid")?.Value;
+        if (!Guid.TryParse(userGuidString, out var userGuid))
+        {
+            return Unauthorized("Invalid user GUID in token");
+        }
+
+        //convert user guid to int ID
+        var userId = await GuidHelpers.GetUserIdByGuid(userGuid, _context);
+        if (userId == null)
+            return NotFound("User not found.");
+
+        //retrieving the user entity of the user that is updating the list
+        var user = await _context.Siteusers.FindAsync(userId.Value);
+        if (user == null)
+            return NotFound("User entity not found.");
+
+
         //retrieve the current list from the database 
         var list = await _context.Lists
             .FirstOrDefaultAsync(l => l.Id == listId && l.IsActive);
@@ -208,6 +243,8 @@ public class ListController : ControllerBase
             .FirstOrDefaultAsync();
         //TODO figure out color
         list.Position = listDto.Position;
+        list.UpdatedBy = user;
+        list.UpdatedOn = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         return NoContent();
