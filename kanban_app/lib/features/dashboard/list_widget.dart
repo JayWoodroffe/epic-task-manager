@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:kanban_app/models/list.dart';
 import 'package:kanban_app/models/task.dart';

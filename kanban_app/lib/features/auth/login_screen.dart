@@ -5,7 +5,6 @@ import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/auth/signup_screen.dart';
 import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
-import 'package:kanban_app/features/auth/auth_service.dart';
 import 'package:kanban_app/widgets/my_button.dart';
 import 'package:kanban_app/widgets/my_text_form.dart';
 import 'package:provider/provider.dart';
@@ -22,11 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false; //to show if the api is loading the login results
-  bool _obscureText = true; //for toggling visibility in passwordfield
 
   @override
   void dispose() {
     // Dispose controllers when the widget is removed
+    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
   }

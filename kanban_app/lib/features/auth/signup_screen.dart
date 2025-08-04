@@ -19,8 +19,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final _passwordConfirmController = TextEditingController();
   final _fullNameController = TextEditingController();
 
-  bool _obscureTextInitial = true;
-  bool _obscureTextConfirm = true;
   bool _isLoading = false;
 
   @override

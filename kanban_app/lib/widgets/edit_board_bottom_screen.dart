@@ -22,8 +22,6 @@ class _EditBoardBottomSheetState extends State<EditBoardBottomSheet> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  final FocusNode _focusNode = FocusNode();
-
   @override
   void initState() {
     super.initState();

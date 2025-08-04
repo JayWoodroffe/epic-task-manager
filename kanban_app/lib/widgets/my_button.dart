@@ -5,7 +5,7 @@ class MyButton extends StatelessWidget {
   final String label;
   final void Function() onButtonPressed;
   final Color color;
-  Icon? buttonIcon;
+  final Icon? buttonIcon;
   final double width;
   final double height;
 
