@@ -8,10 +8,7 @@ A full-stack Kanban-style task management application built with:
 ---
 
 ## 📁 Project Structure
-epic-task-manager/
-├── backend/KanbanApi → .NET API project
-├── kanban_app/ → Flutter mobile frontend (tested on Android)
-├── db/ → SQL dump and DB model (.mwb)
+<pre> \`\`\`plaintext epic-task-manager/ ├── backend/KanbanApi → .NET API project ├── kanban_app/ → Flutter mobile frontend (tested on Android) ├── db/ → SQL dump and DB model (.mwb) \`\`\` </pre>
 
 ## ⚙️ Requirements
 
@@ -29,7 +26,8 @@ epic-task-manager/
 
 ```bash
 git clone https://github.com/your-username/epic-task-manager.git
-cd epic-task-manager```
+cd epic-task-manager
+```
 
 ### 2️⃣ Set Up the Database
 Import the schema and data
@@ -53,7 +51,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;
 > If you're using a different MySQL user (not `root`), update the `user=` value too.
 
 **Option 2: Edit appsettings.json (for local testing only)**
-``json
+```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "server=localhost;port=3306;database=kanban_db;user=root;password=yourpassword"
