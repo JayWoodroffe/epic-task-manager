@@ -1,0 +1,8 @@
+
+public class ProjectDto
+{
+    public Guid Guid { get; set; }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public UserDto[]? Users { get; set; } 
+}

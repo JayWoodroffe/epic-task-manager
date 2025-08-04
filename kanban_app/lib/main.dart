@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:kanban_app/features/auth/auth_provider.dart';
 import 'package:kanban_app/features/auth/login_screen.dart';
+import 'package:kanban_app/providers/board_provider.dart';
+import 'package:kanban_app/providers/list_provider.dart';
+import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/themes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ProjectProvider()),
+      ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ChangeNotifierProvider(create: (_) => BoardProvider()),
+      ChangeNotifierProvider(create: (_) => ListProvider())
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
