@@ -8,7 +8,12 @@ A full-stack Kanban-style task management application built with:
 ---
 
 ## 📁 Project Structure
-<pre> \`\`\`plaintext epic-task-manager/ ├── backend/KanbanApi → .NET API project ├── kanban_app/ → Flutter mobile frontend (tested on Android) ├── db/ → SQL dump and DB model (.mwb) \`\`\` </pre>
+```bash
+epic-task-manager/
+├── backend/KanbanApi → .NET API project
+├── kanban_app/ → Flutter mobile frontend (tested on Android)
+├── db/ → SQL dump and DB model (.mwb)
+```
 
 ## ⚙️ Requirements
 
@@ -99,7 +104,7 @@ const String baseUrl = "http://10.0.2.2:5000/api";
 // Or your actual host IP if using a physical device
 ```
 
-####Run the App on Android
+###Run the App on Android
 ```bash
 flutter run
 ```
