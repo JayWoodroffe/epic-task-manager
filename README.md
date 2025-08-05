@@ -136,8 +136,8 @@ Explore via Postman
 
 | Login | Project Dashboard | Edit Project |
 |-------|-------------------|--------------|
-| ![Login](screenshots/Login.png) | ![Project Dashboard](screenshots/ProjectDashboard.png) | ![Edit Project](screenshots/EditProject.png) |
+| ![Login](screenshots/Login.jpg) | ![Project Dashboard](screenshots/ProjectDashboard.jpg) | ![Edit Project](screenshots/EditProject.jpg) |
 
-| Create Project | List Task | Create Task |
-|----------------|-----------|-------------|
-| ![Create Project](screenshots/CreateProject.png) | ![List Task](screenshots/List.png) | ![Create Task](screenshots/CreateTask.png) |
+| Create Project | List of Tasks | Create Task |
+|----------------|---------------|-------------|
+| ![Create Project](screenshots/CreateProject.jpg) | ![List Task](screenshots/List.jpg) | ![Create Task](screenshots/CreateTask.jpg) |
