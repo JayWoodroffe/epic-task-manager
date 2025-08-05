@@ -196,13 +196,6 @@ public class ProjectController : ControllerBase
             }).ToArray()
         };
 
-        //var projectDto = new ProjectDto
-        //{
-        //    Guid = project.Guid,
-        //    Name = project.Name,
-        //    Description = project.Description,
-        //    Users = null
-        //};
         return CreatedAtAction(nameof(GetProjectByGuid), new { projectGuid = project.Guid }, resultDto);
     }
 

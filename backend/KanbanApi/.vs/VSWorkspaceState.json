@@ -7,8 +7,9 @@
     "\\DTO",
     "\\Helpers",
     "\\Models",
-    "\\Services"
+    "\\Services",
+    "\\Tests"
   ],
-  "SelectedNode": "\\Controllers\\UserController.cs",
+  "SelectedNode": "\\Controllers\\ProjectController.cs",
   "PreviewInSolutionExplorer": false
 }

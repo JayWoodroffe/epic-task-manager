@@ -1,17 +1,23 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:jwt_decoder/jwt_decoder.dart';
 
-//handle user login, receiving anf securely storing JWT token from the backend,
+//handle user login, receiving and securely storing JWT token from the backend
 class AuthService {
-  final _storage = const FlutterSecureStorage();
+  late http.Client client;
+  late FlutterSecureStorage _storage;
   final String baseUrl = 'http://192.168.1.54:5285/api';
+
+  //allowing for mock clients and fake storage to be passed in for testing
+  AuthService({http.Client? client, FlutterSecureStorage? storage})
+      : client = client ??
+            http.Client(), //if not provided, use the real http.Client and real storage
+        _storage = storage ?? const FlutterSecureStorage();
 
   Future<bool> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/auth/login');
 
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
@@ -34,7 +40,7 @@ class AuthService {
       String confirmPassword) async {
     final url = Uri.parse('$baseUrl/auth/register');
 
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
