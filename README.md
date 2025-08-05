@@ -109,12 +109,20 @@ const String baseUrl = "http://10.0.2.2:5000/api";
 flutter run
 ```
 
+### Admin Login (for testing)
+| Role  | Email            | Password    |
+| ----- | ---------------- | ----------- |
+| Admin | `emaileg@gmail.com` | `MySecret123!` |
+
+
 ### 🧪 API Endpoints Overview
+```bash
 Example routes: 
 POST /api/auth/login – login
 GET /api/project – get projects (note: requires admin role)
 POST /api/list – create task lists
 PUT /api/card/{id} – update task card
+```
 Explore via Postman
 
 ### 📝 Notes
@@ -123,3 +131,13 @@ Explore via Postman
 - Use UserSecrets for secure backend config, or provide an appsettings.Development.json locally.
 - Ensure MySQL is running and listening on port 3306.
 
+###Screenshots
+### 📸 Application Screenshots
+
+| Login | Project Dashboard | Edit Project |
+|-------|-------------------|--------------|
+| ![Login](screenshots/Login.png) | ![Project Dashboard](screenshots/ProjectDashboard.png) | ![Edit Project](screenshots/EditProject.png) |
+
+| Create Project | List Task | Create Task |
+|----------------|-----------|-------------|
+| ![Create Project](screenshots/CreateProject.png) | ![List Task](screenshots/List.png) | ![Create Task](screenshots/CreateTask.png) |
