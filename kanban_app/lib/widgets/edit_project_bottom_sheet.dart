@@ -11,6 +11,7 @@ import 'package:kanban_app/widgets/my_text_form.dart';
 import 'package:kanban_app/widgets/user_email_card.dart';
 import 'package:provider/provider.dart';
 
+//Modal for creating or editing projects
 class EditProjectBottomSheet extends StatefulWidget {
   final Project project;
   final bool isEditing;
@@ -27,7 +28,7 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
   final _addUserController = TextEditingController();
   List<User> _selectedUsers = []; //users attached to the project
   List<User> _allUsers = []; //all of the users in the system
-  User? _selectedUser;
+  User? _selectedUser; //user selected from the autocomplete options
 
   final FocusNode _focusNode = FocusNode();
 
@@ -43,8 +44,9 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
       _loadAllUsers();
     });
 
-    _nameController.addListener(() => setState(
-        () {})); //to trigger if the save/create button is available or not
+    //to trigger if the save/create button is available or not
+    //- project can only be saved or created if it has a name
+    _nameController.addListener(() => setState(() {}));
   }
 
   @override
@@ -149,11 +151,13 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                 ],
               ),
               SizedBox(height: 25),
+              //textfields to edit the properties of a project: name and description
               MyTextField(
                   controller: _nameController,
                   label: 'Project Name',
                   hideContent: false,
                   textColor: MyColors.tertiary),
+              //error message displayed if name is empty
               if (_nameController.text.trim().isEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8, left: 12),
@@ -181,12 +185,14 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                       color: MyColors.tertiary),
                 ),
               ),
+              //displaying all the users currently in this project
               Column(
                 children: _selectedUsers
                     .map((user) => UserEmailCard(
                           user: user,
                           onRemoved: (context, user) {
-                            removeUser(user); // Call the removeUser  method
+                            //to remove a user from a project
+                            removeUser(user);
                           },
                         ))
                     .toList(),
@@ -196,17 +202,17 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
               ),
 
               //textfield to search the email addresses of all the users in the system - can add them to the project
+              //searching done based on email as it is the only unique field for users
               ConstrainedBox(
                 constraints: BoxConstraints(minHeight: 50, maxHeight: 300),
                 child: RawAutocomplete<User>(
                   textEditingController: _addUserController,
                   focusNode: _focusNode,
                   optionsBuilder: (TextEditingValue textEditingValue) {
-                    print('[DEBUG] Input: ${textEditingValue.text}');
-                    print('[DEBUG] All users: $_allUsers');
-
+                    //nothing has been entered to search with
                     if (textEditingValue.text.isEmpty)
                       return const Iterable<User>.empty();
+                    //filter users in system based on the entered search text
                     final filtered = _allUsers
                         .where((user) =>
                             user.email.toLowerCase().contains(
@@ -214,7 +220,7 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                             !_selectedUsers.contains(user))
                         .toList();
 
-                    print('[DEBUG] Filtered: $filtered');
+                    //returns users that match the current search
                     return filtered;
                   },
                   //when a user is selected from the autocomplete options
@@ -224,11 +230,13 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                     //store the selected user
                     setState(() => _selectedUser = user);
                   },
-                  displayStringForOption: (User user) => user.email,
+                  displayStringForOption: (User user) =>
+                      user.email, //displays only the users' emails
                   fieldViewBuilder: (BuildContext context,
                       TextEditingController textEditingController,
                       FocusNode focusNode,
                       VoidCallback onFieldSubmitted) {
+                    //row for the searching text field and the add button to add the user
                     return Row(
                       children: [
                         Expanded(
@@ -259,15 +267,17 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
                             ),
                           ),
                         ),
-                        //icon for actually adding the user to the project
+                        //icon for adding the user to the project
                         IconButton(
                           icon: Icon(Icons.add),
                           onPressed: () {
                             if (_selectedUser != null &&
                                 !_selectedUsers.contains(_selectedUser!)) {
                               setState(() {
-                                _selectedUsers.add(_selectedUser!);
-                                _addUserController.clear();
+                                _selectedUsers.add(
+                                    _selectedUser!); //adds user to project's users
+                                _addUserController
+                                    .clear(); //clears the textfield
                                 _selectedUser = null; // Reset selection
                               });
                             }
@@ -393,7 +403,6 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
     if (mounted) {
       setState(() {
         _allUsers = projectProvider.users.cast<User>();
-        print('[MY_APP] Loaded users: $_allUsers');
       });
     }
   }

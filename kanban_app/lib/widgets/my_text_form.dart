@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/styles/colors.dart';
 
+/*custom text field with options to obscure text for password text fields and ability to make it multiline*/
 class MyTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;

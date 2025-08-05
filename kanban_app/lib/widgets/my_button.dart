@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/styles/colors.dart';
 
+/*custom button widget with default:
+- border and drop shadow
+- centered text
+
+allows user to choose:
+- button color
+- label color
+- if they want to include an icon or not
+- onButtonPressed()*/
+
 class MyButton extends StatelessWidget {
   final String label;
   final void Function() onButtonPressed;

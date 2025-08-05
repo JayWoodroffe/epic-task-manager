@@ -1,12 +1,14 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/features/dashboard/boards_dashboard.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:provider/provider.dart';
 
+//widget to display the name and description of a project
+//includes edit button if the user is an admin
 class ProjectCard extends StatelessWidget {
   final Project project;
   final void Function(BuildContext, Offset, Project) onMenuPressed;
@@ -23,7 +25,6 @@ class ProjectCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-          //TODO clicking on a project will go to a screen displaying all the board linked to that project, and clicking on a board will go to board screen
           return BoardsDashboard(project: project);
         }));
       },

@@ -8,6 +8,7 @@ import 'package:kanban_app/widgets/my_button.dart';
 import 'package:kanban_app/widgets/my_text_form.dart';
 import 'package:provider/provider.dart';
 
+//Modal for creating or editing boards
 class EditBoardBottomSheet extends StatefulWidget {
   final Board board;
   final bool isEditing;
@@ -63,7 +64,7 @@ class _EditBoardBottomSheetState extends State<EditBoardBottomSheet> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //top row with edit heading and exit button
+                //top row with heading and exit button
                 children: [
                   Text(
                     widget.isEditing ? "Edit Board" : "New Board",

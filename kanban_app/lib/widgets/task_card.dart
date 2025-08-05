@@ -3,6 +3,7 @@ import 'package:kanban_app/models/task.dart';
 import 'package:kanban_app/providers/list_provider.dart';
 import 'package:provider/provider.dart';
 
+//displays a single task - name of task and a delete button
 class TaskCard extends StatelessWidget {
   final Task task;
   const TaskCard({required this.task, super.key});

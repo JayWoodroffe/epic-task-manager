@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/features/boards/board_screen.dart';
 import 'package:kanban_app/models/board.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:provider/provider.dart';
 
+//Displays a single Kanban Board title and description
 class BoardCard extends StatelessWidget {
   final Board board;
   final void Function(Board) onEditPressed;
@@ -19,11 +20,10 @@ class BoardCard extends StatelessWidget {
 
     return GestureDetector(
         onTap: () {
-          //navigate to the board screen when selected
+          //navigate to the board screen (where all the board's lists are displayed) when selected
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
-            //TODO clicking on a project will go to a screen displaying all the board linked to that project, and clicking on a board will go to board screen
-            return BoardScreen(board: this.board);
+            return BoardScreen(board: board);
           }));
         },
         child: Container(
@@ -55,6 +55,7 @@ class BoardCard extends StatelessWidget {
                           color: MyColors.deepGreen,
                         ),
                   ),
+                  //edit button only shown to admins
                   if (isAdmin)
                     GestureDetector(
                       onTapDown: (TapDownDetails details) {

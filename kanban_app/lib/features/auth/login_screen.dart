@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/features/auth/signup_screen.dart';
 import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: MyColors.cream,
@@ -75,44 +75,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   //login button
                   MyButton(
                     label: 'Login',
-                    onButtonPressed: () => _handleLogin(_authProvider),
+                    onButtonPressed: () => _handleLogin(authProvider),
                     color: MyColors.tertiary,
                     width: double.infinity,
                   ),
-                  // SizedBox(
-                  //   height: 50,
-                  //   width: double.infinity,
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(16),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //             blurRadius: 0,
-                  //             color: MyColors.charcoal,
-                  //             offset: Offset(5, 7))
-                  //       ],
-                  //     ),
-                  //     child: TextButton(
-                  //         onPressed: () {
-                  //           _handleLogin(_authProvider);
-                  //         },
-                  //         child: Text(
-                  //           "Login",
-                  //           style: Theme.of(context)
-                  //               .textTheme
-                  //               .bodyMedium
-                  //               ?.copyWith(color: MyColors.cream),
-                  //         ),
-                  //         style: TextButton.styleFrom(
-                  //           shape: RoundedRectangleBorder(
-                  //             side: BorderSide(
-                  //                 color: MyColors.charcoal, width: 3),
-                  //             borderRadius: BorderRadius.circular(16),
-                  //           ),
-                  //           backgroundColor: MyColors.tertiary,
-                  //         )),
-                  //   ),
-                  // ),
 
                   SizedBox(height: 20),
 
@@ -156,12 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   //handle login request
-  Future<void> _handleLogin(AuthProvider _authProvider) async {
+  Future<void> _handleLogin(AuthProvider authProvider) async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     setState(() => _isLoading = true);
-    final success = await _authProvider.login(email, password);
+    final success = await authProvider.login(email, password);
     setState(() => _isLoading = false);
 
     if (success) {

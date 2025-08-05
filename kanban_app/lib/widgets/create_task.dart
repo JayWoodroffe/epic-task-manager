@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/styles/colors.dart';
 
-//Custom dialog widget for creating a new task
+//Custom dialog widget for creating a new task or list
 class CreateTask extends StatefulWidget {
   final Function(String taskName) onConfirm;
   final VoidCallback onCancel;

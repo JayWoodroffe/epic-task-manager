@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/models/board.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/providers/board_provider.dart';
@@ -9,6 +9,7 @@ import 'package:kanban_app/widgets/edit_board_bottom_screen.dart';
 import 'package:kanban_app/widgets/my_button.dart';
 import 'package:provider/provider.dart';
 
+//displays all the boards relating to the provided project
 class BoardsDashboard extends StatefulWidget {
   final Project project;
   const BoardsDashboard({super.key, required this.project});
@@ -155,7 +156,6 @@ class _BoardsDashboardState extends State<BoardsDashboard> {
           SnackBar(content: Text("Board saved successfully")),
         );
       } catch (e) {
-        print("Failed to save board: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to save board: $e")),
         );

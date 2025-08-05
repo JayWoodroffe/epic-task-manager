@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/models/project.dart';
-import 'package:kanban_app/data/api/project_api.dart';
+import 'package:kanban_app/api/project_api.dart';
 
 class ProjectProvider with ChangeNotifier {
   List<dynamic> _projects = [];
@@ -11,13 +11,13 @@ class ProjectProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   List<dynamic> get users => _users;
 
+  //used for admins
   Future<void> fetchAllProjects() async {
     _isLoading = true;
     notifyListeners();
 
     try {
       _projects = await ProjectApi().getAllProjects();
-      print('Fetched ${_projects.length} projects.');
     } catch (e) {
       print('Error fetching projects: $e');
     }
@@ -26,6 +26,7 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //for regular users
   Future<void> fetchProjectsForUser() async {
     _isLoading = true;
     notifyListeners();
@@ -42,9 +43,6 @@ class ProjectProvider with ChangeNotifier {
   }
 
   Future<void> fetchAllUsers() async {
-    // _isLoading = true;
-    // notifyListeners();
-
     try {
       _users = await ProjectApi().getAllUsers();
       print('Fetched ${_users.length} users.');

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/data/api/list_api.dart';
+import 'package:kanban_app/api/list_api.dart';
 import 'package:kanban_app/models/list.dart';
 import 'package:kanban_app/models/task.dart';
 
-//TODO: do i want this to also provide the tasks - ie: i a task gets moved, added, changed, would this provider update
+//manages both the lists of a given baord as well as the tasks in that list
 class ListProvider with ChangeNotifier {
   List<dynamic> _lists = [];
   String currentBoardId = "";
-  bool _isLoadingList = false;
-  bool _isLoadingTask = false;
+  bool _isLoadingList = false; //for when list data is being loaded
+  bool _isLoadingTask = false; //for when task data is being loaded
 
   List<dynamic> get lists => _lists;
   bool get isLoadingList => _isLoadingList;
@@ -20,7 +20,6 @@ class ListProvider with ChangeNotifier {
 
     try {
       _lists = await ListApi().getListsForBoard(currentBoardId);
-      print('Fetched ${_lists.length} lists.');
     } catch (e) {
       print('Error fetching lists: $e');
     }
@@ -96,6 +95,7 @@ class ListProvider with ChangeNotifier {
     }
   }
 
+  //for reordering tasks within a single list
   Future<void> reorderTasks(List<Task> updatedTasks, String listId) async {
     _isLoadingTask = true;
     notifyListeners();
@@ -140,6 +140,7 @@ class ListProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //for moving tasks between different lists
   Future<void> moveTaskToList(Task task, String oldListId) async {
     _isLoadingTask = true;
     notifyListeners();

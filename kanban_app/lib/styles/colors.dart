@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//custom colors used throughout the application
 class MyColors {
   static const cream = Color(0xffeadfcb);
   static const secondary = Color(0xffB83A2D);

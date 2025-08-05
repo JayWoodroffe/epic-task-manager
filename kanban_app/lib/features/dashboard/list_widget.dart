@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 /*Class to display a single list for a board
 - shows all of the tasks currently associated with this list
 - has a create task button for each list - when the user creates a new task, 
-it should automatically be created in the list on which they clicked the button*/
+it is automatically created in the list on which they clicked the button*/
 class ListScreen extends StatefulWidget {
   final ListType list;
   final VoidCallback? onDragStarted;
@@ -38,18 +38,24 @@ class _ListScreenState extends State<ListScreen> {
   Widget build(BuildContext context) {
     final listProvider = Provider.of<ListProvider>(context, listen: false);
 
+    //wrapped in a drag target st a task can be dragged and dropped into the list
     return DragTarget<Task>(
       onWillAccept: (_) => true,
       onAccept: (incomingTask) async {
         final oldListId = incomingTask.listId;
-        final isSameList = oldListId == widget.list.id;
-        if (isSameList) return;
+        final isSameList = oldListId ==
+            widget.list
+                .id; //checks if the task is being moved within this list or from another
+        if (isSameList)
+          return; //moving within a list is handled by the inner DragTarget below
 
+        //updates the Task object with the new listId and order
         final updatedTask = incomingTask.copyWith(
           listId: widget.list.id,
           order: widget.list.tasks.length,
         );
 
+        //updates the moved task
         await listProvider.moveTaskToList(updatedTask, oldListId);
 
         widget.onDragEnded?.call();
@@ -61,7 +67,7 @@ class _ListScreenState extends State<ListScreen> {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                //container for list heading
+                //for list heading
                 Container(
                   width: MediaQuery.of(context).size.width - 20,
                   height: 50,
@@ -80,6 +86,7 @@ class _ListScreenState extends State<ListScreen> {
                           ),
                         ),
                       ),
+                      //include a delete button for lists
                       GestureDetector(
                         onTap: () async {
                           showDialog(
@@ -120,6 +127,7 @@ class _ListScreenState extends State<ListScreen> {
                 ),
                 SizedBox(height: 20),
 
+                //all tasks in the given list
                 Expanded(
                   child: listProvider.isLoadingTask
                       ? Center(
@@ -135,6 +143,7 @@ class _ListScreenState extends State<ListScreen> {
                                 itemCount: widget.list.tasks.length,
                                 itemBuilder: (context, index) {
                                   final task = widget.list.tasks[index];
+                                  //the list of tasks is also a DragTarget st tasks can be dragged and reordered within a list
                                   return DragTarget<Task>(
                                     onWillAccept: (incomingTask) => true,
                                     onAccept: (incomingTask) async {
@@ -144,20 +153,23 @@ class _ListScreenState extends State<ListScreen> {
                                       final isSameList =
                                           oldListId == widget.list.id;
 
-                                      // Copy + adjust order
+                                      //copy the current tasks in the list
                                       List<Task> updatedTasks = [
                                         ...widget.list.tasks
                                       ];
+                                      //remove the task that's being moved
                                       updatedTasks.removeWhere(
                                           (t) => t.id == incomingTask.id);
 
+                                      //create a new task with modified values
                                       final newTask = incomingTask.copyWith(
                                         listId: widget.list.id,
                                         order: index,
                                       );
+                                      //insert that task back into the list
                                       updatedTasks.insert(index, newTask);
 
-                                      // Fix ordering
+                                      //fix ordering
                                       for (int i = 0;
                                           i < updatedTasks.length;
                                           i++) {
@@ -176,11 +188,13 @@ class _ListScreenState extends State<ListScreen> {
                                       widget.onDragEnded?.call();
                                     },
                                     builder: (context, _, __) {
+                                      //make the task object a longpressdragable so it can be moved
                                       return LongPressDraggable<Task>(
                                         data: task,
                                         onDragStarted: widget.onDragStarted,
                                         onDragEnd: (_) =>
                                             widget.onDragEnded?.call(),
+                                        //manually program the drag st the page changes when the user drags an object near the edge of the screen
                                         onDragUpdate: (details) {
                                           final dx = details.globalPosition.dx;
                                           final screenWidth =

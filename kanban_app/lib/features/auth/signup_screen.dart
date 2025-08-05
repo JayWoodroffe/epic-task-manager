@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/features/dashboard/dashboard.dart';
 import 'package:kanban_app/styles/colors.dart';
 import 'package:kanban_app/widgets/my_button.dart';
@@ -32,7 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: MyColors.cream,
@@ -94,7 +94,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     onButtonPressed: () => checkPasswords(
                         _passwordController.text,
                         _passwordConfirmController.text,
-                        _authProvider),
+                        authProvider),
                     color: MyColors.tertiary,
                     width: double.infinity,
                   ),
@@ -119,9 +119,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void checkPasswords(
-      String password, String confirmPassword, AuthProvider _authProvider) {
-    String errorMessage = _authProvider.checkPasswordValidity(password);
-    if (!errorMessage.isEmpty) {
+      String password, String confirmPassword, AuthProvider authProvider) {
+    String errorMessage = authProvider.checkPasswordValidity(password);
+    if (errorMessage.isNotEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(errorMessage)));
       return; //initial password validity is treated as the preferential/more vital error
@@ -140,20 +140,20 @@ class _SignupScreenState extends State<SignupScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Email is required.")));
       } else {
-        _handleSignup(_authProvider);
+        _handleSignup(authProvider);
       }
     }
   }
 
   //handle signup request
-  Future<void> _handleSignup(AuthProvider _authProvider) async {
+  Future<void> _handleSignup(AuthProvider authProvider) async {
     final email = _emailController.text.trim();
     final name = _fullNameController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _passwordConfirmController.text;
 
     setState(() => _isLoading = true);
-    String? error = await _authProvider.register(
+    String? error = await authProvider.register(
       name,
       email,
       password,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/features/auth/login_screen.dart';
 import 'package:kanban_app/providers/board_provider.dart';
 import 'package:kanban_app/providers/list_provider.dart';

@@ -8,6 +8,7 @@ import 'package:kanban_app/widgets/create_task.dart';
 import 'package:kanban_app/widgets/my_button.dart';
 import 'package:provider/provider.dart';
 
+//displays all the lists and tasks for a given board
 class BoardScreen extends StatefulWidget {
   final Board board;
   const BoardScreen({super.key, required this.board});

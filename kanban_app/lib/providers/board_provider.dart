@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/data/api/boards_api.dart';
+import 'package:kanban_app/api/board_api.dart';
 import 'package:kanban_app/models/board.dart';
 
+//provides the current boards that have been retrieved for a project
+//if a project is opened, its boards will be loaded into _boards[]
 class BoardProvider with ChangeNotifier {
   List<dynamic> _boards = [];
   String currentProjectId = "";

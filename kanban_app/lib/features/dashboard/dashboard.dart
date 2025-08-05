@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kanban_app/features/auth/auth_provider.dart';
+import 'package:kanban_app/providers/auth_provider.dart';
 import 'package:kanban_app/models/project.dart';
 import 'package:kanban_app/providers/project_provider.dart';
 import 'package:kanban_app/styles/colors.dart';
@@ -131,7 +131,6 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
           SnackBar(content: Text("Project created successfully")),
         );
       } catch (e) {
-        print("Failed to create project: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to create project: $e")),
         );

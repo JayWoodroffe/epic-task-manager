@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:kanban_app/models/user.dart';
 
+//simply displays a user's email
 class UserEmailCard extends StatelessWidget {
   final User user;
   final void Function(BuildContext, User user) onRemoved;
