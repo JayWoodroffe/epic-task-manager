@@ -73,7 +73,6 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;
 **Run the API**
 ```bash
 dotnet restore
-dotnet ef database update    # Optional: only if migrations exist or needed
 dotnet run
 ```
 The API will start on http://localhost:5000 (or whatever port is configured).
