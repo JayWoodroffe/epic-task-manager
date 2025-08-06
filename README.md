@@ -130,7 +130,6 @@ Explore via Postman
 - Use UserSecrets for secure backend config, or provide an appsettings.Development.json locally.
 - Ensure MySQL is running and listening on port 3306.
 
-###Screenshots
 ### 📸 Application Screenshots
 
 | Login | Project Dashboard | Edit Project |
@@ -140,3 +139,16 @@ Explore via Postman
 | Create Project | List of Tasks | Create Task |
 |----------------|---------------|-------------|
 | ![Create Project](screenshots/CreateProject.jpg) | ![List Task](screenshots/List.jpg) | ![Create Task](screenshots/CreateTask.jpg) |
+
+### Features and Logic Flow
+- **Login and Registration:** Email and password login, registration with standard password minimums. Currently only allows registration as a regular user. Use provided Admin email and password found above to see admin capabilities
+- **Project Dashboard:** For admins, displays all projects and the ability to edit existing projects or create new ones. Regular users see all the projects currently assigned to them as per the UserProject table in the database. If no projects are assigned to a user, a text field explaining such is displayed.
+  - Editing and creating projects: The bottom modal that is displayed during editing and creating a project includes textfields for the name and description and a display for seeing all the users associated with the project. Users can be searched for using their email address, and then added to the project using the + button to the right.  
+- **Board Dashboard:** Clicking on any project will direct the user to the list of boards included in that project. Admins can edit and create new boards.
+- **Board Screen:** Clicking on any board will open it's Board Screen. This screen displays all the lists in this board and their associated tasks.
+- features:
+  - Swipe left and right between lists. Final page on this page view displays a button for creating new lists in this board.
+  - Create new tasks. Each list has a button to create a task in that list.
+  - Moving tasks:
+    - Tasks can be reordered both within a list (by long holding and dragging between other tasks)
+    - Tasks can be moved between lists (by long holding and dragging the task to the edge of the screen)
